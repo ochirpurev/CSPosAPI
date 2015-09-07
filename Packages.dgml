@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="CSPosAPI" Label="CSPosAPI" Category="Project" />
+    <Node Id="cef.redist.x64 3.2272.32" Label="cef.redist.x64 3.2272.32" Category="Package" />
+    <Node Id="cef.redist.x86 3.2272.32" Label="cef.redist.x86 3.2272.32" Category="Package" />
+    <Node Id="CefSharp.Common 41.0.1" Label="CefSharp.Common 41.0.1" Category="Package" />
+    <Node Id="CefSharp.WinForms 41.0.1" Label="CefSharp.WinForms 41.0.1" Category="Package" />
+    <Node Id="HtmlRenderer.Core 1.5.0.5" Label="HtmlRenderer.Core 1.5.0.5" Category="Package" />
+    <Node Id="HtmlRenderer.WinForms 1.5.0.6" Label="HtmlRenderer.WinForms 1.5.0.6" Category="Package" />
+    <Node Id="Microsoft.AspNet.Razor 2.0.30506.0" Label="Microsoft.AspNet.Razor 2.0.30506.0" Category="Package" />
+  </Nodes>
+  <Links>
+    <Link Source="CefSharp.Common 41.0.1" Target="cef.redist.x86 3.2272.32" Category="Package Dependency" />
+    <Link Source="CefSharp.Common 41.0.1" Target="cef.redist.x64 3.2272.32" Category="Package Dependency" />
+    <Link Source="CefSharp.WinForms 41.0.1" Target="CefSharp.Common 41.0.1" Category="Package Dependency" />
+    <Link Source="HtmlRenderer.WinForms 1.5.0.6" Target="HtmlRenderer.Core 1.5.0.5" Category="Package Dependency" />
+    <Link Source="CSPosAPI" Target="CefSharp.WinForms 41.0.1" Category="Installed Package" />
+    <Link Source="CSPosAPI" Target="HtmlRenderer.WinForms 1.5.0.6" Category="Installed Package" />
+    <Link Source="CSPosAPI" Target="Microsoft.AspNet.Razor 2.0.30506.0" Category="Installed Package" />
+  </Links>
+  <Categories>
+    <Category Id="Project" />
+    <Category Id="Package" />
+  </Categories>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Project" ValueLabel="True">
+      <Condition Expression="HasCategory('Project')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Package Dependency" ValueLabel="True">
+      <Condition Expression="HasCategory('Package Dependency')" />
+      <Setter Property="Background" Value="Yellow" />
+    </Style>
+  </Styles>
+</DirectedGraph>
