@@ -136,7 +136,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="libs\lib-x64\zxing.dll" />
     <Content Include="logo-last.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="libs\lib-x86\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
