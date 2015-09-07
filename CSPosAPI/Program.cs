@@ -30,6 +30,7 @@ namespace CSPosAPI
             UnmanagedType.BStr
             )]
         public static extern string put(String message);
+        
 
 
         /// <summary>
@@ -64,6 +65,11 @@ namespace CSPosAPI
         [STAThread]
         static void Main()
         {
+            
+            var lib = Environment.Is64BitOperatingSystem ? "lib-x86" : "lib-x64";
+            var path = Environment.GetEnvironmentVariable("PATH");
+            Environment.SetEnvironmentVariable("PATH", path + @";/libs/" + lib);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());

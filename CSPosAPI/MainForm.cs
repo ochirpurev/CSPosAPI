@@ -130,14 +130,13 @@ namespace CSPosAPI
                     double cityTax = Convert.ToDouble(row.Cells["CityTax"].Value);
                     double unitPriceNonVat = Convert.ToDouble(row.Cells["UnitPriceNonVat"].Value);
 
-                    double summary = qty * unitPrice;
+                    double summary = qty * (unitPrice + cityTax);
                     row.Cells["UnitPrice"].Value = (unitPriceNonVat * 1.1).ToString(Program.NUMBER_FORMAT);
                     row.Cells["Vat"].Value = (unitPriceNonVat * 0.1).ToString(Program.NUMBER_FORMAT);
                     row.Cells["Amount"].Value = summary.ToString(Program.NUMBER_FORMAT);
                     summaryAmount += summary;
                     summaryVat += vat;
                     summaryCityTax += cityTax;
-
                 }
             }
         }
@@ -181,12 +180,12 @@ namespace CSPosAPI
             }
             else if("1202".Equals(id)){
                 stock.code = id;
-                stock.name = "Сүү";
+                stock.name = "Цамц";
                 stock.measureUnit = "л";
                 stock.qty = "1.00";
-                stock.unitPrice = "1000.00";
-                stock.totalAmount = "1000.00";
-                stock.vat = "100.00";
+                stock.unitPrice = "45000.00";
+                stock.totalAmount = "45000.00";
+                stock.vat = "4500.00";
                 stock.barCode = "156266";
                 stock.cityTax = "0.00";
             }
@@ -196,7 +195,7 @@ namespace CSPosAPI
                 stock.name = "Сүү";
                 stock.measureUnit = "л";
                 stock.qty = "1.00";
-                stock.unitPrice = "9.80";
+                stock.unitPrice = "980.00";
                 stock.totalAmount = "980.00";
                 stock.vat = "100.00";
                 stock.barCode = "156266";
@@ -205,7 +204,7 @@ namespace CSPosAPI
             else if ("1001".Equals(id))
             {
                 stock.code = id;
-                stock.name = "Соёмбо Архи";
+                stock.name = "Архи-Ex";
                 stock.measureUnit = "ш";
                 stock.qty = "1.00";
                 stock.unitPrice = "40000.00";
@@ -241,7 +240,7 @@ namespace CSPosAPI
             else if ("2002".Equals(id))
             {
                 stock.code = id;
-                stock.name = "Тамхи Esse";
+                stock.name = "Magna";
                 stock.measureUnit = "ш";
                 stock.qty = "1.00";
                 stock.unitPrice = "4000.00";
@@ -270,17 +269,17 @@ namespace CSPosAPI
             PrinterSettings ps = new PrinterSettings();
             Font font = new Font("Courier New", 15);
 
-
             PaperSize psize = new PaperSize("Custom", 100, 200);
-            //ps.DefaultPageSettings.PaperSize = psize;
-            
+            ps.DefaultPageSettings.PaperSize = psize;
+
             pd.Document = pdoc;
             pd.Document.DefaultPageSettings.PaperSize = psize;
             //pdoc.DefaultPageSettings.PaperSize.Height =320;
-            pdoc.DefaultPageSettings.PaperSize.Height = 820;
+
+            pdoc.DefaultPageSettings.PaperSize.Height = 1122;
 
             pdoc.DefaultPageSettings.PaperSize.Width = 520;
-
+            //pdoc.DefaultPageSettings.PaperSize.Width = 820;
             pdoc.PrintPage += new PrintPageEventHandler(pdoc_PrintPage);
 
             DialogResult result = pd.ShowDialog();
@@ -296,19 +295,20 @@ namespace CSPosAPI
                     pdoc.Print();
                 }
             }
-
         }
 
         void pdoc_PrintPage(object sender, PrintPageEventArgs e)
         {
             Graphics graphics = e.Graphics;
+
+            //graphics.PageUnit = GraphicsUnit.
             Font font = new Font("Courier New", 10);
             float fontHeight = font.GetHeight();
             int startX = 50;
             int startY = 55;
             int Offset = 40;
        
-            graphics.DrawString("Мерчант : " + this.resultData.merchantId,
+            graphics.DrawString("Мерчант :\t" + this.resultData.merchantId,
                     new Font("Courier New", 11),
                     new SolidBrush(Color.Black), startX, startY + Offset);
             Offset = Offset + 20;
@@ -317,14 +317,14 @@ namespace CSPosAPI
                      new Font("Courier New", 11),
                      new SolidBrush(Color.Black), new Rectangle(startX , startY + Offset, 400 , 200));
             Offset = Offset + 20 +20;
-            graphics.DrawString("Огноо : " + this.resultData.date,
+            graphics.DrawString("Огноо :\t" + this.resultData.date,
                      new Font("Courier New", 11),
                      new SolidBrush(Color.Black), startX, startY + Offset);
             Offset = Offset + 20;
 
             if (resultData.lottery != null && resultData.lottery.Length != 0)
             {
-                graphics.DrawString("Сугалаа : " + this.resultData.lottery,
+                graphics.DrawString("Сугалаа :\t" + this.resultData.lottery,
                     new Font("Courier New", 11),
                     new SolidBrush(Color.Black), startX, startY + Offset);
                 Offset = Offset + 20;
@@ -337,8 +337,13 @@ namespace CSPosAPI
 
             Offset = Offset + 20;
 
-            graphics.DrawString("Бараа " + " тоо/ш" + " Үнэ " + " НӨАТ/орсон " + " City/tax " + " Дүн", new Font("Courier New", 10),
-                     new SolidBrush(Color.Black), startX, startY + Offset);
+            StringFormat sfh = new StringFormat();
+            float[] tsh = { 0.0f, 50.0f, 70.0f, 70.0f,40.0f };
+            sfh.SetTabStops(0.0f, tsh);
+
+            string tmp = String.Format("Бараа\t" + "тоо/ш\t" + "Үнэ\t" + "НӨАТ/орсон\t" + "НХОАТ\t" + "Дүн");
+            graphics.DrawString(tmp, new Font("Courier New", 10),
+                     new SolidBrush(Color.Black), startX, startY + Offset, sfh);
 
             Offset = Offset + 20;
 
@@ -346,10 +351,23 @@ namespace CSPosAPI
             {
                 foreach (BillDetail stock in this.resultData.stocks)
                 {
-                    string unitPriceVat = (Convert.ToDouble(stock.unitPrice) + Convert.ToDouble(stock.vat)).ToString();
-                    graphics.DrawString(stock.name + " " + stock.qty + "  " + stock.unitPrice + " " + unitPriceVat + "  " + stock.cityTax + " " + stock.totalAmount, new Font("Courier New", 10),
-                       new SolidBrush(Color.Black), startX, startY + Offset);
-                    Offset = Offset + 20;
+                    graphics.DrawString(stock.name,
+                     new Font("Courier New", 10),
+                     new SolidBrush(Color.Black), 
+                     new Rectangle(startX, startY + Offset, 50, 50)
+                     );
+
+                    string unitPriceVat = (Convert.ToDouble(stock.unitPrice) + Convert.ToDouble(stock.vat)).ToString(Program.NUMBER_FORMAT);
+
+                    var value = String.Format("{0,10}\t{1,6}\t{2,6}\t{3,6}\t{4,6}", stock.qty, stock.unitPrice, unitPriceVat, stock.cityTax, stock.totalAmount);
+
+                    StringFormat sf = new StringFormat();
+                    float[] ts = { 0.0f, 40.0f, 40.0f, 40.0f,40.0f };
+                    sf.SetTabStops(0.0f, ts);
+
+                    graphics.DrawString(value, new Font("Courier New", 10),
+                       new SolidBrush(Color.Black), startX, startY + Offset,sf);
+                    Offset = Offset + 30;
                 }
 
             }
@@ -361,14 +379,32 @@ namespace CSPosAPI
 
             if (resultData.bankTransactions != null && resultData.bankTransactions.Count != 0) {
 
-                graphics.DrawString("Банк/нэр" + "   RRN   " + "   Approval   " + "   Дүн" , new Font("Courier New", 10),
-                  new SolidBrush(Color.Black), startX, startY + Offset);
+                StringFormat sfb = new StringFormat();
+                float[] tsb = { 80.0f, 80.0f, 80.0f};
+                sfb.SetTabStops(0.0f, tsb);
+                string tmpb = String.Format("Банк/нэр\t\t" + "RRN\t" + "Approval\t" + "Дүн");
+
+                graphics.DrawString(tmpb, new Font("Courier New", 10),
+                  new SolidBrush(Color.Black), startX, startY + Offset,sfb);
 
                 Offset = Offset + 20;
-                foreach (BillBankTransaction banktranscation in this.resultData.bankTransactions) {
-                    graphics.DrawString(banktranscation.bankName + " " + banktranscation.rrn + " " + banktranscation.approvalCode + "  " + banktranscation.amount, new Font("Courier New", 10),
-                      new SolidBrush(Color.Black), startX, startY + Offset);
-                    Offset = Offset + 20;
+                foreach (BillBankTransaction banktranscation in this.resultData.bankTransactions)
+                {
+
+                    graphics.DrawString(banktranscation.bankName,
+                    new Font("Courier New", 10),
+                     new SolidBrush(Color.Black),
+                    new Rectangle(startX, startY + Offset, 100, 50)
+                    );
+
+                    StringFormat sfbt = new StringFormat();
+                    float[] tsbt = { 50.0f, 50.0f, 50.0f };
+                    sfbt.SetTabStops(0.0f, tsbt);
+
+                    var value = String.Format("\t\t{0,12}\t{1,5}\t{2,5}", banktranscation.rrn, banktranscation.approvalCode, banktranscation.amount);
+                    graphics.DrawString(value, new Font("Courier New", 10),
+                      new SolidBrush(Color.Black), startX, startY + Offset, sfbt);
+                    Offset = Offset + 20 + 20;
                 }
 
                 underLine = "------------------------------------------";
@@ -377,27 +413,27 @@ namespace CSPosAPI
                 Offset = Offset + 20;
             }
 
-            graphics.DrawString("Бэлэн : " + resultData.cashAmount, new Font("Courier New", 10),
+            graphics.DrawString("Бэлэн :\t" + resultData.cashAmount, new Font("Courier New", 10),
                    new SolidBrush(Color.Black), startX, startY + Offset);
 
             Offset = Offset + 20;
 
-            graphics.DrawString("Бэлэн Бус : " + resultData.nonCashAmount, new Font("Courier New", 10),
+            graphics.DrawString("Бэлэн Бус :\t" + resultData.nonCashAmount, new Font("Courier New", 10),
                    new SolidBrush(Color.Black), startX, startY + Offset);
 
             Offset = Offset + 20;
 
-            graphics.DrawString("Нийт : " + resultData.amount, new Font("Courier New", 10),
+            graphics.DrawString("Нийт :\t\t" + resultData.amount, new Font("Courier New", 10),
                    new SolidBrush(Color.Black), startX, startY + Offset);
 
             Offset = Offset + 20;
 
-            graphics.DrawString("НӨАТ : " + resultData.vat, new Font("Courier New", 10),
+            graphics.DrawString("НӨАТ :\t\t" + resultData.vat, new Font("Courier New", 10),
                  new SolidBrush(Color.Black), startX, startY + Offset);
 
             Offset = Offset + 20;
 
-            graphics.DrawString("НХОАТ : " + resultData.cityTax, new Font("Courier New", 10),
+            graphics.DrawString("НХОАТ :\t" + resultData.cityTax, new Font("Courier New", 10),
                new SolidBrush(Color.Black), startX, startY + Offset);
 
             Offset = Offset + 20;
@@ -418,7 +454,7 @@ namespace CSPosAPI
             }
             if (resultData.internalCode != null && resultData.internalCode.Length != 0)
             {
-                graphics.DrawString("Internal Code : ", new Font("Courier New", 10),
+                graphics.DrawString("   Internal Code :\t", new Font("Courier New", 10),
                        new SolidBrush(Color.Black), startX + 70, startY + Offset);
                 Offset = Offset + 20;
 
