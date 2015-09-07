@@ -67,7 +67,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="zxing, Version=0.14.0.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\lib-x64\zxing.dll</HintPath>
+      <HintPath>libs\lib-x64\zxing.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -136,12 +136,35 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="libs\lib-x64\icudt53.dll" />
+    <Content Include="libs\lib-x64\icuin53.dll" />
+    <Content Include="libs\lib-x64\icuuc53.dll" />
+    <Content Include="libs\lib-x64\libeay32.dll" />
+    <Content Include="libs\lib-x64\platforms\qwindows.dll" />
+    <Content Include="libs\lib-x64\Qt5Core.dll" />
+    <Content Include="libs\lib-x64\Qt5Gui.dll" />
+    <Content Include="libs\lib-x64\Qt5Network.dll" />
+    <Content Include="libs\lib-x64\Qt5Sql.dll" />
+    <Content Include="libs\lib-x64\Qt5Widgets.dll" />
+    <Content Include="libs\lib-x64\sqldrivers\qsqlite.dll" />
+    <Content Include="libs\lib-x64\ssleay32.dll" />
     <Content Include="libs\lib-x64\zxing.dll" />
+    <Content Include="libs\lib-x86\icudt53.dll" />
+    <Content Include="libs\lib-x86\icuin53.dll" />
+    <Content Include="libs\lib-x86\icuuc53.dll" />
+    <Content Include="libs\lib-x86\libeay32.dll" />
+    <Content Include="libs\lib-x86\platforms\qwindows.dll" />
+    <Content Include="libs\lib-x86\Qt5Core.dll" />
+    <Content Include="libs\lib-x86\Qt5Gui.dll" />
+    <Content Include="libs\lib-x86\Qt5Network.dll" />
+    <Content Include="libs\lib-x86\Qt5Sql.dll" />
+    <Content Include="libs\lib-x86\Qt5Widgets.dll" />
+    <Content Include="libs\lib-x86\sqldrivers\qsqlite.dll" />
+    <Content Include="libs\lib-x86\ssleay32.dll" />
+    <Content Include="libs\lib-x86\zxing.dll" />
     <Content Include="logo-last.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="libs\lib-x86\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
