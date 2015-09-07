@@ -67,7 +67,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="zxing, Version=0.14.0.0, Culture=neutral, PublicKeyToken=4e88037ac681fe60, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\x64\zxing.dll</HintPath>
+      <HintPath>lib\lib-x64\zxing.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
