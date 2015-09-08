@@ -271,7 +271,7 @@ namespace CSPosAPI
 
             pdoc.DefaultPageSettings.PaperSize.Height = 1122;
 
-            pdoc.DefaultPageSettings.PaperSize.Width = 215;
+            pdoc.DefaultPageSettings.PaperSize.Width = 520;
             //pdoc.DefaultPageSettings.PaperSize.Width = 820;
             pdoc.PrintPage += new PrintPageEventHandler(pdoc_PrintPage);
 
