@@ -12,4 +12,4 @@
 		-.Net 4.0 framework
 
 3 Get PosAPI dll 
-		-https://vatpsp.mta.mn/
+		-https://vatps.mta.mn/posApi
