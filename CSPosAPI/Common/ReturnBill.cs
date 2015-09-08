@@ -11,5 +11,7 @@ namespace CSPosAPI.Common
         /// Буцаалтын гүйлгээний дугаар
         /// </summary>
         public string returnBillId;
+
+        public string date;
     }
 }

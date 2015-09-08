@@ -42,6 +42,8 @@ namespace CSPosAPI.Common
         /// Бэлэн бус гүйлгээний мэдээлэл
         /// </summary>
         public List<BillBankTransaction> bankTransactions;
+        public string customerNo;
+        public string districtCode;
 
     }
 }

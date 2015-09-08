@@ -18,6 +18,9 @@ namespace CSPosAPI
         public BillReturn()
         {
             InitializeComponent();
+            
+            dateTimePickerReturn.CustomFormat = "yyyy-MM-dd-HH:mm:ss";
+            //dateTimePickerReturn.ShowUpDown = true;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -28,7 +31,8 @@ namespace CSPosAPI
         private void buttonReturn_Click(object sender, EventArgs e)
         {
             var returnBillData = new ReturnBill() {
-                returnBillId = textBoxReturn.Text
+                returnBillId = textBoxReturn.Text,
+                date = dateTimePickerReturn.Value.ToString("yyyy-MM-dd HH:mm:ss")
             };
             var jsonData = new JavaScriptSerializer().Serialize(returnBillData);
 

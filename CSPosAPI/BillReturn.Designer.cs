@@ -33,12 +33,14 @@
             this.textBoxReturn = new System.Windows.Forms.TextBox();
             this.buttonReturn = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.dateTimePickerReturn = new System.Windows.Forms.DateTimePicker();
+            this.labelDate = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(35, 28);
+            this.label1.Location = new System.Drawing.Point(35, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(96, 13);
             this.label1.TabIndex = 0;
@@ -46,14 +48,14 @@
             // 
             // textBoxReturn
             // 
-            this.textBoxReturn.Location = new System.Drawing.Point(177, 25);
+            this.textBoxReturn.Location = new System.Drawing.Point(177, 11);
             this.textBoxReturn.Name = "textBoxReturn";
             this.textBoxReturn.Size = new System.Drawing.Size(135, 20);
             this.textBoxReturn.TabIndex = 1;
             // 
             // buttonReturn
             // 
-            this.buttonReturn.Location = new System.Drawing.Point(56, 70);
+            this.buttonReturn.Location = new System.Drawing.Point(38, 70);
             this.buttonReturn.Name = "buttonReturn";
             this.buttonReturn.Size = new System.Drawing.Size(75, 23);
             this.buttonReturn.TabIndex = 2;
@@ -63,7 +65,7 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(177, 70);
+            this.buttonCancel.Location = new System.Drawing.Point(237, 70);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 3;
@@ -71,11 +73,30 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
+            // dateTimePickerReturn
+            // 
+            this.dateTimePickerReturn.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePickerReturn.Location = new System.Drawing.Point(177, 37);
+            this.dateTimePickerReturn.Name = "dateTimePickerReturn";
+            this.dateTimePickerReturn.Size = new System.Drawing.Size(135, 20);
+            this.dateTimePickerReturn.TabIndex = 4;
+            // 
+            // labelDate
+            // 
+            this.labelDate.AutoSize = true;
+            this.labelDate.Location = new System.Drawing.Point(35, 43);
+            this.labelDate.Name = "labelDate";
+            this.labelDate.Size = new System.Drawing.Size(97, 13);
+            this.labelDate.TabIndex = 5;
+            this.labelDate.Text = "Гүйлгээний огноо";
+            // 
             // BillReturn
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(324, 120);
+            this.ClientSize = new System.Drawing.Size(344, 114);
+            this.Controls.Add(this.labelDate);
+            this.Controls.Add(this.dateTimePickerReturn);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonReturn);
             this.Controls.Add(this.textBoxReturn);
@@ -95,5 +116,7 @@
         private System.Windows.Forms.TextBox textBoxReturn;
         private System.Windows.Forms.Button buttonReturn;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.DateTimePicker dateTimePickerReturn;
+        private System.Windows.Forms.Label labelDate;
     }
 }

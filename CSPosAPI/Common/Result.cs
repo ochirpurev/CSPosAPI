@@ -74,5 +74,7 @@ namespace CSPosAPI.Common
         /// Амжилттай татсан буюу Амжилттай буцаасан
         /// </summary>
         public string success;
+
+        public string warningMsg;
     }
 }

@@ -66,7 +66,7 @@ namespace CSPosAPI
         static void Main()
         {
             
-            var lib = Environment.Is64BitOperatingSystem ? "lib-x86" : "lib-x64";
+            var lib = Environment.Is64BitOperatingSystem ? "lib-x64" : "lib-x86";
             var path = Environment.GetEnvironmentVariable("PATH");
             Environment.SetEnvironmentVariable("PATH", path + @";/libs/" + lib);
 

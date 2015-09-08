@@ -22,27 +22,16 @@ namespace CSPosAPI
         private double summaryAmount;
         private double summaryVat;
         private double summaryCityTax;
-        PrintDocument pdoc = null;
+
         private Result resultData;
+
+        PrintDocument pdoc = null;
 
         private List<BillBankTransaction> ListBankTranscation;
 
         public MainForm()
         {
             InitializeComponent();
-             
-            //this.dataGridViewStocks.Rows[0].Cells["Code"].Value = "10001";
-            //this.dataGridViewStocks.Rows[0].Cells["Name"].Value = "Талх";
-            //this.dataGridViewStocks.Rows[0].Cells["MeasureUnit"].Value = "ш";
-            //this.dataGridViewStocks.Rows[0].Cells["Qty"].Value = "3.00";
-            //this.dataGridViewStocks.Rows[0].Cells["UnitPriceNonVat"].Value = "1000.00";
-            //this.dataGridViewStocks.Rows[0].Cells["UnitPrice"].Value = "1100.00";
-            //this.dataGridViewStocks.Rows[0].Cells["Amount"].Value = "3300.00";
-            //this.dataGridViewStocks.Rows[0].Cells["Vat"].Value = "300";
-            //this.dataGridViewStocks.Rows[0].Cells["BarCode"].Value = "564889656";
-            //this.dataGridViewStocks.Rows[0].Cells["CityTax"].Value = "0.00";
-            
-            
         }
 
         private void buttonNonCash_Click(object sender, EventArgs e)
@@ -89,15 +78,19 @@ namespace CSPosAPI
             //?????
             if (lstBillStock.Count == 0)
             {
-                lstBillStock=null;
+                lstBillStock = null;
             }
             data.stocks = lstBillStock;
+
+            data.customerNo = textBoxCustmerNo.Text;
+            data.districtCode = textBoxDistrict.Text;
+
             var json = new JavaScriptSerializer().Serialize(data);
             var result = Program.put(json);
 
 
             this.resultData = new JavaScriptSerializer().Deserialize<Result>(result);
-            
+
             if ("True".Equals(this.resultData.success.ToString()))
             {
                 print();
@@ -211,7 +204,7 @@ namespace CSPosAPI
                 stock.totalAmount = "40000.00";
                 stock.vat = "4000.00";
                 stock.barCode = "0124652";
-                stock.cityTax = "4500.00";
+                stock.cityTax =(Convert.ToDouble(stock.unitPrice)* 0.01).ToString(Program.NUMBER_FORMAT);
             }
             else if ("1002".Equals(id))
             {
@@ -235,7 +228,7 @@ namespace CSPosAPI
                 stock.totalAmount = "4000.00";
                 stock.vat = "400.00";
                 stock.barCode = "012465233";
-                stock.cityTax = "500.00";
+                stock.cityTax = (Convert.ToDouble(stock.unitPrice) * 0.01).ToString(Program.NUMBER_FORMAT);
             }
             else if ("2002".Equals(id))
             {
@@ -247,7 +240,7 @@ namespace CSPosAPI
                 stock.totalAmount = "4000.00";
                 stock.vat = "400.00";
                 stock.barCode = "012465233";
-                stock.cityTax = "500.00";
+                stock.cityTax = (Convert.ToDouble(stock.unitPrice) * 0.01).ToString(Program.NUMBER_FORMAT);
             }
 
             return stock;
@@ -269,7 +262,7 @@ namespace CSPosAPI
             PrinterSettings ps = new PrinterSettings();
             Font font = new Font("Courier New", 15);
 
-            PaperSize psize = new PaperSize("Custom", 100, 200);
+            PaperSize psize = new PaperSize("Custom", 215, 200);
             ps.DefaultPageSettings.PaperSize = psize;
 
             pd.Document = pdoc;
@@ -278,7 +271,7 @@ namespace CSPosAPI
 
             pdoc.DefaultPageSettings.PaperSize.Height = 1122;
 
-            pdoc.DefaultPageSettings.PaperSize.Width = 520;
+            pdoc.DefaultPageSettings.PaperSize.Width = 215;
             //pdoc.DefaultPageSettings.PaperSize.Width = 820;
             pdoc.PrintPage += new PrintPageEventHandler(pdoc_PrintPage);
 
@@ -455,11 +448,11 @@ namespace CSPosAPI
             if (resultData.internalCode != null && resultData.internalCode.Length != 0)
             {
                 graphics.DrawString("   Internal Code :\t", new Font("Courier New", 10),
-                       new SolidBrush(Color.Black), startX + 70, startY + Offset);
+                       new SolidBrush(Color.Black), startX + 70 + 20, startY + Offset);
                 Offset = Offset + 20;
 
                 graphics.DrawString(resultData.internalCode, new Font("Courier New", 10),
-                        new SolidBrush(Color.Black),new Rectangle(startX +70, startY + Offset , 200, 50) );
+                        new SolidBrush(Color.Black),new Rectangle(startX +70 + 20 , startY + Offset , 200, 50) );
                 Offset = Offset + 20;
             }
         }
@@ -469,6 +462,5 @@ namespace CSPosAPI
             dataGridViewStocks.Rows.Clear();
             Calculate();
         }
-
     }
 }
