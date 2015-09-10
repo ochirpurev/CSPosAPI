@@ -63,7 +63,7 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.labelCustomerNo = new System.Windows.Forms.Label();
             this.labelDistrict = new System.Windows.Forms.Label();
-            this.textBoxCustmerNo = new System.Windows.Forms.TextBox();
+            this.textBoxPaidAmount = new System.Windows.Forms.TextBox();
             this.textBoxDistrict = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewStocks)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -364,7 +364,7 @@
             this.tableLayoutPanel2.Controls.Add(this.textBoxAmount, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.labelCustomerNo, 0, 3);
             this.tableLayoutPanel2.Controls.Add(this.labelDistrict, 2, 3);
-            this.tableLayoutPanel2.Controls.Add(this.textBoxCustmerNo, 1, 3);
+            this.tableLayoutPanel2.Controls.Add(this.textBoxPaidAmount, 1, 3);
             this.tableLayoutPanel2.Controls.Add(this.textBoxDistrict, 3, 3);
             this.tableLayoutPanel2.Location = new System.Drawing.Point(1, 336);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -381,9 +381,9 @@
             this.labelCustomerNo.AutoSize = true;
             this.labelCustomerNo.Location = new System.Drawing.Point(3, 84);
             this.labelCustomerNo.Name = "labelCustomerNo";
-            this.labelCustomerNo.Size = new System.Drawing.Size(48, 13);
+            this.labelCustomerNo.Size = new System.Drawing.Size(47, 26);
             this.labelCustomerNo.TabIndex = 13;
-            this.labelCustomerNo.Text = "Регистр";
+            this.labelCustomerNo.Text = "Төлсөн дүн";
             // 
             // labelDistrict
             // 
@@ -394,13 +394,13 @@
             this.labelDistrict.TabIndex = 14;
             this.labelDistrict.Text = "Бүсчлэл код";
             // 
-            // textBoxCustmerNo
+            // textBoxPaidAmount
             // 
-            this.textBoxCustmerNo.Location = new System.Drawing.Point(60, 87);
-            this.textBoxCustmerNo.Name = "textBoxCustmerNo";
-            this.textBoxCustmerNo.Size = new System.Drawing.Size(100, 20);
-            this.textBoxCustmerNo.TabIndex = 15;
-            this.textBoxCustmerNo.Text = "УЦ90120425";
+            this.textBoxPaidAmount.Location = new System.Drawing.Point(60, 87);
+            this.textBoxPaidAmount.Name = "textBoxPaidAmount";
+            this.textBoxPaidAmount.Size = new System.Drawing.Size(100, 20);
+            this.textBoxPaidAmount.TabIndex = 15;
+            this.textBoxPaidAmount.Text = "0.00";
             // 
             // textBoxDistrict
             // 
@@ -466,7 +466,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn CityTax;
         private System.Windows.Forms.Label labelCustomerNo;
         private System.Windows.Forms.Label labelDistrict;
-        private System.Windows.Forms.TextBox textBoxCustmerNo;
+        private System.Windows.Forms.TextBox textBoxPaidAmount;
         private System.Windows.Forms.TextBox textBoxDistrict;
         private System.Windows.Forms.Button buttonReturnBill;
     }

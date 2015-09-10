@@ -27,6 +27,8 @@ namespace CSPosAPI
 
         PrintDocument pdoc = null;
 
+        private double k = 1;
+
         private List<BillBankTransaction> ListBankTranscation;
 
         public MainForm()
@@ -75,14 +77,14 @@ namespace CSPosAPI
             }
             data.cityTax = textBoxCityTax.Text;
             data.bankTransactions = ListBankTranscation;
-            //?????
+
             if (lstBillStock.Count == 0)
             {
                 lstBillStock = null;
             }
             data.stocks = lstBillStock;
 
-            data.customerNo = textBoxCustmerNo.Text;
+           // data.customerNo = "";
             data.districtCode = textBoxDistrict.Text;
 
             var json = new JavaScriptSerializer().Serialize(data);
@@ -105,7 +107,16 @@ namespace CSPosAPI
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(Program.sendData());
+            var result =Program.sendData();
+            var resultSend = new JavaScriptSerializer().Deserialize<Result>(result);
+            if ("True".Equals(resultSend.success))
+            {
+                MessageBox.Show("Aмжилттай");
+            }
+            else
+            {
+                MessageBox.Show(result);
+            }
         }
 
         private void dataGridViewStocks_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -122,7 +133,6 @@ namespace CSPosAPI
                     double vat = Convert.ToDouble(row.Cells["Vat"].Value);
                     double cityTax = Convert.ToDouble(row.Cells["CityTax"].Value);
                     double unitPriceNonVat = Convert.ToDouble(row.Cells["UnitPriceNonVat"].Value);
-
                     double summary = qty * (unitPrice + cityTax);
                     row.Cells["UnitPrice"].Value = (unitPriceNonVat * 1.1).ToString(Program.NUMBER_FORMAT);
                     row.Cells["Vat"].Value = (unitPriceNonVat * 0.1).ToString(Program.NUMBER_FORMAT);
@@ -143,25 +153,25 @@ namespace CSPosAPI
                 row.Cells[0].Value = stock.code;
                 row.Cells[1].Value = stock.name;
                 row.Cells[2].Value = stock.measureUnit;
-                row.Cells[3].Value = stock.qty ;
-                row.Cells[4].Value = stock.unitPrice ;
-                row.Cells[5].Value =( Convert.ToDouble(stock.unitPrice) * Convert.ToDouble(stock.qty)).ToString();
-                row.Cells[6].Value = stock.totalAmount ;
-                row.Cells[7].Value = stock.vat ;
-                row.Cells[8].Value = stock.barCode ;
-                row.Cells[9].Value = stock.cityTax  ;
+                row.Cells[3].Value = stock.qty;
+                row.Cells[4].Value = stock.unitPrice;
+                row.Cells[5].Value = (Convert.ToDouble(stock.unitPrice) * Convert.ToDouble(stock.qty)).ToString();
+                row.Cells[6].Value = stock.totalAmount;
+                row.Cells[7].Value = stock.vat;
+                row.Cells[8].Value = stock.barCode;
+                row.Cells[9].Value = stock.cityTax;
                 this.dataGridViewStocks.Rows.Add(row);
                 Calculate();
                 Calculate();
             }
-           
-           
         }
-        private BillDetail GetItemById(string id) {
+        private BillDetail GetItemById(string id)
+        {
             var stock = new BillDetail();
 
-            if ("1201".Equals(id)) {
-                stock.code =id;
+            if ("1201".Equals(id))
+            {
+                stock.code = id;
                 stock.name = "Талх";
                 stock.measureUnit = "ш";
                 stock.qty = "3.00";
@@ -171,7 +181,8 @@ namespace CSPosAPI
                 stock.barCode = "156266";
                 stock.cityTax = "0.00";
             }
-            else if("1202".Equals(id)){
+            else if ("1202".Equals(id))
+            {
                 stock.code = id;
                 stock.name = "Цамц";
                 stock.measureUnit = "л";
@@ -204,7 +215,7 @@ namespace CSPosAPI
                 stock.totalAmount = "40000.00";
                 stock.vat = "4000.00";
                 stock.barCode = "0124652";
-                stock.cityTax =(Convert.ToDouble(stock.unitPrice)* 0.01).ToString(Program.NUMBER_FORMAT);
+                stock.cityTax = (Convert.ToDouble(stock.unitPrice) * 0.01).ToString(Program.NUMBER_FORMAT);
             }
             else if ("1002".Equals(id))
             {
@@ -242,17 +253,19 @@ namespace CSPosAPI
                 stock.barCode = "012465233";
                 stock.cityTax = (Convert.ToDouble(stock.unitPrice) * 0.01).ToString(Program.NUMBER_FORMAT);
             }
-
             return stock;
         }
 
-        private void Calculate() {
+        private void Calculate()
+        {
             dataGridViewStocks_CellValueChanged(null, null);
             textBoxAmount.Text = summaryAmount.ToString(Program.NUMBER_FORMAT);
             textBoxVat.Text = summaryVat.ToString(Program.NUMBER_FORMAT);
             textBoxCityTax.Text = summaryCityTax.ToString(Program.NUMBER_FORMAT);
             textBoxNonCash.Text = summaryNonCash.ToString(Program.NUMBER_FORMAT);
             textBoxCash.Text = (summaryAmount - summaryNonCash < 0 ? 0 : summaryAmount - summaryNonCash).ToString(Program.NUMBER_FORMAT);
+
+            textBoxPaidAmount.Text = textBoxCash.Text;
         }
 
         public void print()
@@ -262,17 +275,31 @@ namespace CSPosAPI
             PrinterSettings ps = new PrinterSettings();
             Font font = new Font("Courier New", 15);
 
-            PaperSize psize = new PaperSize("Custom", 215, 200);
-            ps.DefaultPageSettings.PaperSize = psize;
+           // PaperSize psize = new PaperSize("Custom", 219, 1000);
+            //ps.DefaultPageSettings.PaperSize = psize;
+            //ps.DefaultPageSettings.Margins.Left = 0;
 
+            //ps.DefaultPageSettings.Margins.Top = 0;
+            
+            
             pd.Document = pdoc;
-            pd.Document.DefaultPageSettings.PaperSize = psize;
+            //pd.Document.DefaultPageSettings.PaperSize = psize;
+            
             //pdoc.DefaultPageSettings.PaperSize.Height =320;
 
-            pdoc.DefaultPageSettings.PaperSize.Height = 1122;
+           // MessageBox.Show(pdoc.DefaultPageSettings.PaperSize.Width.ToString());
 
-            pdoc.DefaultPageSettings.PaperSize.Width = 520;
+            //pdoc.DefaultPageSettings.PaperSize.Height = 1122;
+
+            //pdoc.DefaultPageSettings.PaperSize.Width = 219;
             //pdoc.DefaultPageSettings.PaperSize.Width = 820;
+            MessageBox.Show(pd.Document.DefaultPageSettings.PaperSize.Width.ToString());
+            if (pd.Document.DefaultPageSettings.PaperSize.Width <= 284)
+            {
+                k = Convert.ToDouble(pd.Document.DefaultPageSettings.PaperSize.Width) / 284;
+            }
+
+
             pdoc.PrintPage += new PrintPageEventHandler(pdoc_PrintPage);
 
             DialogResult result = pd.ShowDialog();
@@ -282,6 +309,7 @@ namespace CSPosAPI
                 pp.Document = pdoc;
                 System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
                 pp.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+                pp.PrintPreviewControl.Zoom = 1f;
                 result = pp.ShowDialog();
                 if (result == DialogResult.OK)
                 {
@@ -293,174 +321,306 @@ namespace CSPosAPI
         void pdoc_PrintPage(object sender, PrintPageEventArgs e)
         {
             Graphics graphics = e.Graphics;
-
-            //graphics.PageUnit = GraphicsUnit.
-            Font font = new Font("Courier New", 10);
-            float fontHeight = font.GetHeight();
-            int startX = 50;
-            int startY = 55;
-            int Offset = 40;
-       
-            graphics.DrawString("Мерчант :\t" + this.resultData.merchantId,
-                    new Font("Courier New", 11),
-                    new SolidBrush(Color.Black), startX, startY + Offset);
-            Offset = Offset + 20;
-
-            graphics.DrawString("Баримтын дугаар: \n" + this.resultData.billId,
-                     new Font("Courier New", 11),
-                     new SolidBrush(Color.Black), new Rectangle(startX , startY + Offset, 400 , 200));
-            Offset = Offset + 20 +20;
-            graphics.DrawString("Огноо :\t" + this.resultData.date,
-                     new Font("Courier New", 11),
-                     new SolidBrush(Color.Black), startX, startY + Offset);
-            Offset = Offset + 20;
-
-            if (resultData.lottery != null && resultData.lottery.Length != 0)
+            string underLine;
+            Font font;
+            if (k < 1)
             {
-                graphics.DrawString("Сугалаа :\t" + this.resultData.lottery,
-                    new Font("Courier New", 11),
-                    new SolidBrush(Color.Black), startX, startY + Offset);
-                Offset = Offset + 20;
+                font = new Font("Courier New", 6);
+                underLine = "-------------------------------------";
+            }
+            else
+            {
+                font = new Font("Courier New", 8);
+                underLine = "---------------------------------------";
             }
 
-            String underLine = "------------------------------------------";
+            float fontHeight = font.GetHeight();
+            int startX = 10;
+            int startY = 10;
+            int Offset = Convert.ToInt32(fontHeight);
 
-            graphics.DrawString(underLine, new Font("Courier New", 10),
+            int newLine15 = toValue(15);
+            int newLine20 = toValue(20);
+
+            graphics.DrawString("Мерчант :".PadRight(10) + this.resultData.merchantId,
+                    font,
+                    new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine15;
+
+            graphics.DrawString("Баримт №: " + this.resultData.billId,
+                    font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
 
-            Offset = Offset + 20;
+            //graphics.DrawString("Баримт №: \n" + this.resultData.billId,
+            //        font,
+            //         new SolidBrush(Color.Black), new Rectangle(startX, startY + Offset, 400, 200));
+            //Offset = Offset + newLine15 + newLine15;
+            Offset = Offset + newLine15;
+            graphics.DrawString("Огноо :".PadRight(10) + this.resultData.date,
+                     font,
+                     new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine15;
 
-            StringFormat sfh = new StringFormat();
-            float[] tsh = { 0.0f, 50.0f, 70.0f, 70.0f,40.0f };
-            sfh.SetTabStops(0.0f, tsh);
+            graphics.DrawString("Касс :".PadRight(10) +"122",
+                     font,
+                     new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine15;
 
-            string tmp = String.Format("Бараа\t" + "тоо/ш\t" + "Үнэ\t" + "НӨАТ/орсон\t" + "НХОАТ\t" + "Дүн");
-            graphics.DrawString(tmp, new Font("Courier New", 10),
-                     new SolidBrush(Color.Black), startX, startY + Offset, sfh);
+            graphics.DrawString(underLine, font,
+                     new SolidBrush(Color.Black), startX, startY + Offset);
 
-            Offset = Offset + 20;
+            Offset = Offset + newLine20;
+
+           //// string tmp = String.Format("Бараа\t" + "тоо/ш\t" + "Үнэ\t" + "НӨАТ/орсон\t" + "НХОАТ\t" + "Дүн");
+           // string tmp = "Бараа".PadRight(6) + "тоо/ш".PadRight(6) + "Үнэ".PadRight(8) + "НӨАТ/үнэ".PadRight(10) + "НХОАТ".PadRight(8) + "Дүн";
+           // graphics.DrawString(tmp, font,
+           //          new SolidBrush(Color.Black), startX, startY + Offset, sfh);
+
+            string tmp = "Д/д Бараа".PadRight(10) + "Х/нэгж".PadRight(8)+ "Код";
+            graphics.DrawString(tmp, font,
+                     new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine15;
+            string tmp1 = "Үнэ".PadRight(7) + "НӨАТ".PadRight(6) + "НХАТ".PadRight(7) + "тоо/ш".PadRight(12) + "Дүн";
+            tmp1 = tmp1.PadLeft(38);
+            graphics.DrawString(tmp1, font,
+                     new SolidBrush(Color.Black), startX, startY + Offset);
+
+            Offset = Offset + newLine20;
 
             if (this.resultData.stocks != null)
             {
+                var count = 0;
                 foreach (BillDetail stock in this.resultData.stocks)
                 {
-                    graphics.DrawString(stock.name,
-                     new Font("Courier New", 10),
-                     new SolidBrush(Color.Black), 
-                     new Rectangle(startX, startY + Offset, 50, 50)
-                     );
-
+                    graphics.DrawString(++count +" "+ stock.name.PadRight(12)+stock.measureUnit.PadRight(4)+ stock.code ,font,new SolidBrush(Color.Black),startX, startY + Offset);
+                    Offset = Offset + newLine20;
                     string unitPriceVat = (Convert.ToDouble(stock.unitPrice) + Convert.ToDouble(stock.vat)).ToString(Program.NUMBER_FORMAT);
 
-                    var value = String.Format("{0,10}\t{1,6}\t{2,6}\t{3,6}\t{4,6}", stock.qty, stock.unitPrice, unitPriceVat, stock.cityTax, stock.totalAmount);
+                    var value = String.Format("   {0:F0}   {1:F0}   {2:F0}   x {3}", Convert.ToDouble(stock.unitPrice), Convert.ToDouble(stock.vat), Convert.ToDouble(stock.cityTax), stock.qty);
+                    var amount = Convert.ToDouble(stock.totalAmount);
+                    value += amount.ToString().PadLeft(10);
+                    value = value.PadLeft(38);
 
-                    StringFormat sf = new StringFormat();
-                    float[] ts = { 0.0f, 40.0f, 40.0f, 40.0f,40.0f };
-                    sf.SetTabStops(0.0f, ts);
-
-                    graphics.DrawString(value, new Font("Courier New", 10),
-                       new SolidBrush(Color.Black), startX, startY + Offset,sf);
-                    Offset = Offset + 30;
+                    graphics.DrawString(value, font,
+                       new SolidBrush(Color.Black), startX, startY + Offset);
+                    Offset = Offset + newLine15;
                 }
 
             }
 
-            underLine = "------------------------------------------";
-            graphics.DrawString(underLine, new Font("Courier New", 10),
+            graphics.DrawString(underLine, font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
-            Offset = Offset + 20;
+            Offset = Offset + newLine20;
 
-            if (resultData.bankTransactions != null && resultData.bankTransactions.Count != 0) {
+            if (resultData.bankTransactions != null && resultData.bankTransactions.Count != 0)
+            {
 
-                StringFormat sfb = new StringFormat();
-                float[] tsb = { 80.0f, 80.0f, 80.0f};
-                sfb.SetTabStops(0.0f, tsb);
-                string tmpb = String.Format("Банк/нэр\t\t" + "RRN\t" + "Approval\t" + "Дүн");
+                //string tmpb = String.Format("Банк/нэр\t\t" + "RRN\t" + "Approval\t" + "Дүн");
+                string tmpb = String.Format("Банк/нэр".PadRight(12) + "RRN".PadRight(7) + "Approval".PadRight(9) + "Дүн");
+                graphics.DrawString(tmpb, font,
+                  new SolidBrush(Color.Black), startX, startY + Offset);
 
-                graphics.DrawString(tmpb, new Font("Courier New", 10),
-                  new SolidBrush(Color.Black), startX, startY + Offset,sfb);
-
-                Offset = Offset + 20;
+                Offset = Offset + newLine20;
                 foreach (BillBankTransaction banktranscation in this.resultData.bankTransactions)
                 {
 
-                    graphics.DrawString(banktranscation.bankName,
-                    new Font("Courier New", 10),
+                    graphics.DrawString(banktranscation.bankName.PadRight(12),
+                    font,
                      new SolidBrush(Color.Black),
                     new Rectangle(startX, startY + Offset, 100, 50)
                     );
 
-                    StringFormat sfbt = new StringFormat();
-                    float[] tsbt = { 50.0f, 50.0f, 50.0f };
-                    sfbt.SetTabStops(0.0f, tsbt);
-
                     var value = String.Format("\t\t{0,12}\t{1,5}\t{2,5}", banktranscation.rrn, banktranscation.approvalCode, banktranscation.amount);
-                    graphics.DrawString(value, new Font("Courier New", 10),
-                      new SolidBrush(Color.Black), startX, startY + Offset, sfbt);
-                    Offset = Offset + 20 + 20;
+                    //var value = WordWrap(banktranscation.bankName,6).PadRight(6) +banktranscation.rrn.PadRight(7) + banktranscation.approvalCode.PadRight(9)+ banktranscation.amount;
+                    graphics.DrawString(value, font,
+                      new SolidBrush(Color.Black), startX, startY + Offset);
+                    Offset = Offset + newLine20 + newLine20;
                 }
 
-                underLine = "------------------------------------------";
-                graphics.DrawString(underLine, new Font("Courier New", 10),
+                graphics.DrawString(underLine, font,
                          new SolidBrush(Color.Black), startX, startY + Offset);
-                Offset = Offset + 20;
+                Offset = Offset + newLine20;
             }
 
-            graphics.DrawString("Бэлэн :\t" + resultData.cashAmount, new Font("Courier New", 10),
+            graphics.DrawString("Бэлэн :".PadRight(13) + resultData.cashAmount, font,
                    new SolidBrush(Color.Black), startX, startY + Offset);
 
-            Offset = Offset + 20;
+            Offset = Offset + newLine20;
 
-            graphics.DrawString("Бэлэн Бус :\t" + resultData.nonCashAmount, new Font("Courier New", 10),
+            graphics.DrawString("Бэлэн Бус :".PadRight(13) + resultData.nonCashAmount, font,
                    new SolidBrush(Color.Black), startX, startY + Offset);
 
-            Offset = Offset + 20;
+            Offset = Offset + newLine20;
 
-            graphics.DrawString("Нийт :\t\t" + resultData.amount, new Font("Courier New", 10),
-                   new SolidBrush(Color.Black), startX, startY + Offset);
-
-            Offset = Offset + 20;
-
-            graphics.DrawString("НӨАТ :\t\t" + resultData.vat, new Font("Courier New", 10),
+            graphics.DrawString("НӨАТ :".PadRight(13) + resultData.vat, font,
                  new SolidBrush(Color.Black), startX, startY + Offset);
 
-            Offset = Offset + 20;
+            Offset = Offset + newLine20;
 
-            graphics.DrawString("НХОАТ :\t" + resultData.cityTax, new Font("Courier New", 10),
+            graphics.DrawString("НХАТ :".PadRight(13) + resultData.cityTax, font,
                new SolidBrush(Color.Black), startX, startY + Offset);
 
-            Offset = Offset + 20;
+            Offset = Offset + newLine20;
 
-            underLine = "------------------------------------------";
-            graphics.DrawString(underLine, new Font("Courier New", 10),
+            graphics.DrawString("Нийт :".PadRight(13) + resultData.amount, font,
+       new SolidBrush(Color.Black), startX, startY + Offset);
+
+            Offset = Offset + newLine20;
+
+            graphics.DrawString("Төлсөн :".PadRight(13) + Convert.ToDouble(textBoxPaidAmount.Text).ToString(Program.NUMBER_FORMAT), font,
+ new SolidBrush(Color.Black), startX, startY + Offset);
+
+            Offset = Offset + newLine20;
+
+            graphics.DrawString("Хариулт :".PadRight(13) + (Convert.ToDouble(textBoxPaidAmount.Text) - Convert.ToDouble(this.resultData.cashAmount)).ToString(Program.NUMBER_FORMAT), font,
+ new SolidBrush(Color.Black), startX, startY + Offset);
+
+            Offset = Offset + newLine20;
+
+            graphics.DrawString(underLine, font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
-            Offset = Offset + 20;
+            Offset = Offset + newLine20;
 
             if (resultData.lottery != null && resultData.lottery.Length != 0)
             {
-                ZXing.IBarcodeWriter writer = new ZXing.BarcodeWriter { Format = ZXing.BarcodeFormat.QR_CODE };
-                var dataQr = writer.Write(resultData.qrData);
-                var barcodeBitmap = new Bitmap(dataQr,new Size(150,150));
-                graphics.DrawImage(barcodeBitmap, startX + 120, startY + Offset); 
-
-                Offset = Offset + 100 + 50;
+                graphics.DrawString("Сугалаа :".PadRight(15) + this.resultData.lottery,
+                    font,
+                    new SolidBrush(Color.Black), startX, startY + Offset);
+                Offset = Offset + newLine20;
             }
+
+
+            if (resultData.lottery != null && resultData.lottery.Length != 0)
+            {
+                ZXing.IBarcodeWriter writer = new ZXing.BarcodeWriter
+                {
+                    Format = ZXing.BarcodeFormat.QR_CODE,
+                    Options = new ZXing.QrCode.QrCodeEncodingOptions
+                    {
+                        Width = toValue(150),
+                        Height = toValue(150)
+                    }
+                };
+                var dataQr = writer.Write(resultData.qrData);
+                var barcodeBitmap = new Bitmap(dataQr, new Size(toValue(150), toValue(150)));
+                graphics.DrawImage(barcodeBitmap, toValue(startX + 55), startY + Offset);
+
+                Offset = Offset + toValue(100 + 50);
+            }
+
+            var writerBarCode = new ZXing.BarcodeWriter
+            {
+                Format = ZXing.BarcodeFormat.CODE_128,
+                Options = new ZXing.OneD.Code128EncodingOptions {
+                    PureBarcode = true,
+                    Width = toValue(180),
+                    Height = toValue(50),
+                }
+            };
+          
+            var bitmap = writerBarCode.Write(this.resultData.billId);
+            // MessageBox.Show(bitmap.Size.Height + " " + bitmap.Size.Width);
+            //var bitmapData = new Bitmap(bitmap, new Size(toValue(150), toValue(50)));
+            graphics.DrawImage(bitmap, toValue(startX), startY + Offset);
+            
+            Offset = Offset + toValue(70);
+
             if (resultData.internalCode != null && resultData.internalCode.Length != 0)
             {
-                graphics.DrawString("   Internal Code :\t", new Font("Courier New", 10),
-                       new SolidBrush(Color.Black), startX + 70 + 20, startY + Offset);
-                Offset = Offset + 20;
+                graphics.DrawString("Internal Code :".PadLeft(20), font,
+                       new SolidBrush(Color.Black), toValue( startX + 50) , startY + Offset);
+                Offset = Offset + newLine20;
 
-                graphics.DrawString(resultData.internalCode, new Font("Courier New", 10),
-                        new SolidBrush(Color.Black),new Rectangle(startX +70 + 20 , startY + Offset , 200, 50) );
-                Offset = Offset + 20;
+                graphics.DrawString(resultData.internalCode, font,
+                        new SolidBrush(Color.Black), new Rectangle(toValue(startX + 50), startY + Offset, toValue(150), 50));
+                Offset = Offset + newLine20;
             }
-        }
 
+            graphics.Dispose();
+            
+        }
+        int toValue(int value) {
+            return Convert.ToInt32(Convert.ToDouble(value) * this.k);
+        }
         private void buttonNew_Click(object sender, EventArgs e)
         {
             dataGridViewStocks.Rows.Clear();
             Calculate();
+        }
+
+        /// <summary>
+        /// Word wraps the given text to fit within the specified width.
+        /// </summary>
+        /// <param name="text">Text to be word wrapped</param>
+        /// <param name="width">Width, in characters, to which the text
+        /// should be word wrapped</param>
+        /// <returns>The modified text</returns>
+        public static string WordWrap(string text, int width)
+        {
+            int pos, next;
+            StringBuilder sb = new StringBuilder();
+
+            // Lucidity check
+            if (width < 1)
+                return text;
+
+            // Parse each line of text
+            for (pos = 0; pos < text.Length; pos = next)
+            {
+                // Find end of line
+                int eol = text.IndexOf(Environment.NewLine, pos);
+                if (eol == -1)
+                    next = eol = text.Length;
+                else
+                    next = eol + Environment.NewLine.Length;
+
+                // Copy this line of text, breaking into smaller lines as needed
+                if (eol > pos)
+                {
+                    do
+                    {
+                        int len = eol - pos;
+                        if (len > width)
+                            len = BreakLine(text, pos, width);
+                        sb.Append(text, pos, len);
+                        sb.Append(Environment.NewLine);
+
+                        // Trim whitespace following break
+                        pos += len;
+                        while (pos < eol && Char.IsWhiteSpace(text[pos]))
+                            pos++;
+                    } while (eol > pos);
+                }
+                else sb.Append(Environment.NewLine); // Empty line
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Locates position to break the given line so as to avoid
+        /// breaking words.
+        /// </summary>
+        /// <param name="text">String that contains line of text</param>
+        /// <param name="pos">Index where line of text starts</param>
+        /// <param name="max">Maximum line length</param>
+        /// <returns>The modified line length</returns>
+        private static int BreakLine(string text, int pos, int max)
+        {
+            // Find last whitespace in line
+            int i = max;
+            while (i >= 0 && !Char.IsWhiteSpace(text[pos + i]))
+                i--;
+
+            // If no whitespace found, break at maximum length
+            if (i < 0)
+                return max;
+
+            // Find start of whitespace
+            while (i >= 0 && Char.IsWhiteSpace(text[pos + i]))
+                i--;
+
+            // Return length of text before whitespace
+            return i + 1;
         }
     }
 }
