@@ -17,18 +17,39 @@ namespace CSPosAPI
 {
     public partial class MainForm : Form
     {
-
+        /// <summary>
+        /// Нийт бэлэн бусаар төлсөн дүн
+        /// </summary>
         private double summaryNonCash;
+        /// <summary>
+        /// Нийт төлөх дүн
+        /// </summary>
         private double summaryAmount;
+        /// <summary>
+        /// Нийт НӨАТ дүн
+        /// </summary>
         private double summaryVat;
+        /// <summary>
+        /// Нийт НХОАТ дүн
+        /// </summary>
         private double summaryCityTax;
-
+        /// <summary>
+        /// 
+        /// </summary>
         private Result resultData;
-
+        /// <summary>
+        /// Хэвлэгч обьект
+        /// </summary>
         PrintDocument pdoc = null;
-
+        /// <summary>
+        /// Баримтын цаасанд тохируулан хэвлэх үржүүлэгч
+        /// Уг тоо нь 80mm цаас ашиглах үед 1 байна.
+        /// 57,75mm г.м үед харгалзах үржүүлэгчээр хэмжээг тохируулна
+        /// </summary>
         private double k = 1;
-
+        /// <summary>
+        /// Бэлэн бус гүйлгээний жагсаалт
+        /// </summary>
         private List<BillBankTransaction> ListBankTranscation;
 
         public MainForm()
@@ -36,6 +57,12 @@ namespace CSPosAPI
             InitializeComponent();
         }
 
+        #region EVENT_CLICK
+        /// <summary>
+        /// Бэлэн бусаар тооцоо хийх цонхыг ажиллуулна. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonNonCash_Click(object sender, EventArgs e)
         {
             var formNonCash = new FormNonCash();
@@ -46,9 +73,15 @@ namespace CSPosAPI
             Calculate();
             this.summaryNonCash = 0;
         }
+
+        /// <summary>
+        /// Гүйлгээний мэдээллийг JSON форматанд хөрвүүлэн 
+        /// сугалаа,баримтын дугаар, QR код г.м мэдээллийг үүсгэнэ 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonCreateBill_Click(object sender, EventArgs e)
         {
-
             var data = new BillData();
             data.amount = textBoxAmount.Text;
             data.vat = textBoxVat.Text;
@@ -76,7 +109,7 @@ namespace CSPosAPI
                 }
             }
             data.cityTax = textBoxCityTax.Text;
-            data.bankTransactions = ListBankTranscation;
+            data.bankTransactions = this.ListBankTranscation;
 
             if (lstBillStock.Count == 0)
             {
@@ -84,13 +117,10 @@ namespace CSPosAPI
             }
             data.stocks = lstBillStock;
 
-           // data.customerNo = "";
             data.districtCode = textBoxDistrict.Text;
 
             var json = new JavaScriptSerializer().Serialize(data);
             var result = Program.put(json);
-
-
             this.resultData = new JavaScriptSerializer().Deserialize<Result>(result);
 
             if ("True".Equals(this.resultData.success.ToString()))
@@ -98,16 +128,29 @@ namespace CSPosAPI
                 print();
             }
         }
-
+        /// <summary>
+        /// Буцаалтын гүйлгээний цонх-г ажиллуулна.
+        /// Буцаалтыг тухайн баримтын дугаарыг оруулна.
+        /// Хэсэгчилсэн буцаалт хийхгүй тухайн гүйлгээг хүчингүйд тооцно.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonReturnBill_Click(object sender, EventArgs e)
         {
             var formBillReturn = new BillReturn();
             formBillReturn.ShowDialog();
         }
 
+        /// <summary>
+        /// НӨАТУС-с багц сугалааны дугаар татах буюу
+        /// тухайн ПОС-д хийгдсэн гүйлгээний мэдээллийг
+        /// НӨАТУС-д илгээнэ.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonSend_Click(object sender, EventArgs e)
         {
-            var result =Program.sendData();
+            var result = Program.sendData();
             var resultSend = new JavaScriptSerializer().Deserialize<Result>(result);
             if ("True".Equals(resultSend.success))
             {
@@ -119,6 +162,35 @@ namespace CSPosAPI
             }
         }
 
+        /// <summary>
+        /// Сонгогдсон барааг жагсаалтанд нэмнэ.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            if (comboBoxStock.SelectedItem != null)
+            {
+                var stock = GetItemById(comboBoxStock.SelectedItem.ToString());
+                DataGridViewRow row = (DataGridViewRow)dataGridViewStocks.Rows[0].Clone();
+                row.Cells[0].Value = stock.code;
+                row.Cells[1].Value = stock.name;
+                row.Cells[2].Value = stock.measureUnit;
+                row.Cells[3].Value = stock.qty;
+                row.Cells[4].Value = stock.unitPrice;
+                row.Cells[5].Value = (Convert.ToDouble(stock.unitPrice) * Convert.ToDouble(stock.qty)).ToString();
+                row.Cells[6].Value = stock.totalAmount;
+                row.Cells[7].Value = stock.vat;
+                row.Cells[8].Value = stock.barCode;
+                row.Cells[9].Value = stock.cityTax;
+                this.dataGridViewStocks.Rows.Add(row);
+                Calculate();
+                Calculate();
+            }
+        }
+        #endregion
+
+        #region EVENT_VALUECHANGED
         private void dataGridViewStocks_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             summaryAmount = 0;
@@ -143,28 +215,9 @@ namespace CSPosAPI
                 }
             }
         }
+        #endregion
 
-        private void buttonAdd_Click(object sender, EventArgs e)
-        {
-            if (comboBoxStock.SelectedItem != null)
-            {
-                var stock = GetItemById(comboBoxStock.SelectedItem.ToString());
-                DataGridViewRow row = (DataGridViewRow)dataGridViewStocks.Rows[0].Clone();
-                row.Cells[0].Value = stock.code;
-                row.Cells[1].Value = stock.name;
-                row.Cells[2].Value = stock.measureUnit;
-                row.Cells[3].Value = stock.qty;
-                row.Cells[4].Value = stock.unitPrice;
-                row.Cells[5].Value = (Convert.ToDouble(stock.unitPrice) * Convert.ToDouble(stock.qty)).ToString();
-                row.Cells[6].Value = stock.totalAmount;
-                row.Cells[7].Value = stock.vat;
-                row.Cells[8].Value = stock.barCode;
-                row.Cells[9].Value = stock.cityTax;
-                this.dataGridViewStocks.Rows.Add(row);
-                Calculate();
-                Calculate();
-            }
-        }
+
         private BillDetail GetItemById(string id)
         {
             var stock = new BillDetail();
@@ -185,7 +238,7 @@ namespace CSPosAPI
             {
                 stock.code = id;
                 stock.name = "Цамц";
-                stock.measureUnit = "л";
+                stock.measureUnit = "ш";
                 stock.qty = "1.00";
                 stock.unitPrice = "45000.00";
                 stock.totalAmount = "45000.00";
@@ -211,9 +264,9 @@ namespace CSPosAPI
                 stock.name = "Архи-Ex";
                 stock.measureUnit = "ш";
                 stock.qty = "1.00";
-                stock.unitPrice = "40000.00";
-                stock.totalAmount = "40000.00";
-                stock.vat = "4000.00";
+                stock.unitPrice = "20000.00";
+                stock.totalAmount = "20000.00";
+                stock.vat = "2000.00";
                 stock.barCode = "0124652";
                 stock.cityTax = (Convert.ToDouble(stock.unitPrice) * 0.01).ToString(Program.NUMBER_FORMAT);
             }
@@ -235,9 +288,9 @@ namespace CSPosAPI
                 stock.name = "Тамхи Esse";
                 stock.measureUnit = "ш";
                 stock.qty = "1.00";
-                stock.unitPrice = "4000.00";
-                stock.totalAmount = "4000.00";
-                stock.vat = "400.00";
+                stock.unitPrice = "3500.00";
+                stock.totalAmount = "3500.00";
+                stock.vat = "350.00";
                 stock.barCode = "012465233";
                 stock.cityTax = (Convert.ToDouble(stock.unitPrice) * 0.01).ToString(Program.NUMBER_FORMAT);
             }
@@ -247,9 +300,9 @@ namespace CSPosAPI
                 stock.name = "Magna";
                 stock.measureUnit = "ш";
                 stock.qty = "1.00";
-                stock.unitPrice = "4000.00";
-                stock.totalAmount = "4000.00";
-                stock.vat = "400.00";
+                stock.unitPrice = "2500.00";
+                stock.totalAmount = "2500.00";
+                stock.vat = "250.00";
                 stock.barCode = "012465233";
                 stock.cityTax = (Convert.ToDouble(stock.unitPrice) * 0.01).ToString(Program.NUMBER_FORMAT);
             }
@@ -275,30 +328,14 @@ namespace CSPosAPI
             PrinterSettings ps = new PrinterSettings();
             Font font = new Font("Courier New", 15);
 
-           // PaperSize psize = new PaperSize("Custom", 219, 1000);
-            //ps.DefaultPageSettings.PaperSize = psize;
-            //ps.DefaultPageSettings.Margins.Left = 0;
-
-            //ps.DefaultPageSettings.Margins.Top = 0;
-            
-            
+             //PaperSize psize = new PaperSize("Custom", 219, 1000);
             pd.Document = pdoc;
             //pd.Document.DefaultPageSettings.PaperSize = psize;
             
-            //pdoc.DefaultPageSettings.PaperSize.Height =320;
-
-           // MessageBox.Show(pdoc.DefaultPageSettings.PaperSize.Width.ToString());
-
-            //pdoc.DefaultPageSettings.PaperSize.Height = 1122;
-
-            //pdoc.DefaultPageSettings.PaperSize.Width = 219;
-            //pdoc.DefaultPageSettings.PaperSize.Width = 820;
-            MessageBox.Show(pd.Document.DefaultPageSettings.PaperSize.Width.ToString());
             if (pd.Document.DefaultPageSettings.PaperSize.Width <= 284)
             {
                 k = Convert.ToDouble(pd.Document.DefaultPageSettings.PaperSize.Width) / 284;
             }
-
 
             pdoc.PrintPage += new PrintPageEventHandler(pdoc_PrintPage);
 
@@ -335,7 +372,7 @@ namespace CSPosAPI
             }
 
             float fontHeight = font.GetHeight();
-            int startX = 10;
+            int startX = 0;
             int startY = 10;
             int Offset = Convert.ToInt32(fontHeight);
 
@@ -351,17 +388,13 @@ namespace CSPosAPI
                     font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
 
-            //graphics.DrawString("Баримт №: \n" + this.resultData.billId,
-            //        font,
-            //         new SolidBrush(Color.Black), new Rectangle(startX, startY + Offset, 400, 200));
-            //Offset = Offset + newLine15 + newLine15;
             Offset = Offset + newLine15;
             graphics.DrawString("Огноо :".PadRight(10) + this.resultData.date,
                      font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
             Offset = Offset + newLine15;
 
-            graphics.DrawString("Касс :".PadRight(10) +"122",
+            graphics.DrawString("Касс :".PadRight(10) + "122",
                      font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
             Offset = Offset + newLine15;
@@ -371,12 +404,7 @@ namespace CSPosAPI
 
             Offset = Offset + newLine20;
 
-           //// string tmp = String.Format("Бараа\t" + "тоо/ш\t" + "Үнэ\t" + "НӨАТ/орсон\t" + "НХОАТ\t" + "Дүн");
-           // string tmp = "Бараа".PadRight(6) + "тоо/ш".PadRight(6) + "Үнэ".PadRight(8) + "НӨАТ/үнэ".PadRight(10) + "НХОАТ".PadRight(8) + "Дүн";
-           // graphics.DrawString(tmp, font,
-           //          new SolidBrush(Color.Black), startX, startY + Offset, sfh);
-
-            string tmp = "Д/д Бараа".PadRight(10) + "Х/нэгж".PadRight(8)+ "Код";
+            string tmp = "Д/д Бараа".PadRight(10) + "Х/нэгж".PadRight(8) + "Код";
             graphics.DrawString(tmp, font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
             Offset = Offset + newLine15;
@@ -392,7 +420,7 @@ namespace CSPosAPI
                 var count = 0;
                 foreach (BillDetail stock in this.resultData.stocks)
                 {
-                    graphics.DrawString(++count +" "+ stock.name.PadRight(12)+stock.measureUnit.PadRight(4)+ stock.code ,font,new SolidBrush(Color.Black),startX, startY + Offset);
+                    graphics.DrawString(++count + " " + stock.name.PadRight(12) + stock.measureUnit.PadRight(4) + stock.code, font, new SolidBrush(Color.Black), startX, startY + Offset);
                     Offset = Offset + newLine20;
                     string unitPriceVat = (Convert.ToDouble(stock.unitPrice) + Convert.ToDouble(stock.vat)).ToString(Program.NUMBER_FORMAT);
 
@@ -414,27 +442,22 @@ namespace CSPosAPI
 
             if (resultData.bankTransactions != null && resultData.bankTransactions.Count != 0)
             {
-
-                //string tmpb = String.Format("Банк/нэр\t\t" + "RRN\t" + "Approval\t" + "Дүн");
-                string tmpb = String.Format("Банк/нэр".PadRight(12) + "RRN".PadRight(7) + "Approval".PadRight(9) + "Дүн");
+                string tmpb = String.Format("Банк/нэр".PadRight(13) + "RRN".PadRight(12) + "Approval".PadRight(9) + "Дүн");
                 graphics.DrawString(tmpb, font,
                   new SolidBrush(Color.Black), startX, startY + Offset);
 
                 Offset = Offset + newLine20;
                 foreach (BillBankTransaction banktranscation in this.resultData.bankTransactions)
                 {
-
                     graphics.DrawString(banktranscation.bankName.PadRight(12),
                     font,
                      new SolidBrush(Color.Black),
                     new Rectangle(startX, startY + Offset, 100, 50)
                     );
-
-                    var value = String.Format("\t\t{0,12}\t{1,5}\t{2,5}", banktranscation.rrn, banktranscation.approvalCode, banktranscation.amount);
-                    //var value = WordWrap(banktranscation.bankName,6).PadRight(6) +banktranscation.rrn.PadRight(7) + banktranscation.approvalCode.PadRight(9)+ banktranscation.amount;
+                    var value = banktranscation.bankName.PadRight(8) +banktranscation.rrn.PadRight(16) + banktranscation.approvalCode.PadRight(9)+ banktranscation.amount;
                     graphics.DrawString(value, font,
                       new SolidBrush(Color.Black), startX, startY + Offset);
-                    Offset = Offset + newLine20 + newLine20;
+                    Offset = Offset + newLine20; //newLine20;
                 }
 
                 graphics.DrawString(underLine, font,
@@ -486,7 +509,7 @@ namespace CSPosAPI
                 graphics.DrawString("Сугалаа :".PadRight(15) + this.resultData.lottery,
                     font,
                     new SolidBrush(Color.Black), startX, startY + Offset);
-                Offset = Offset + newLine20;
+                Offset = Offset + newLine15;
             }
 
 
@@ -511,24 +534,23 @@ namespace CSPosAPI
             var writerBarCode = new ZXing.BarcodeWriter
             {
                 Format = ZXing.BarcodeFormat.CODE_128,
-                Options = new ZXing.OneD.Code128EncodingOptions {
+                Options = new ZXing.OneD.Code128EncodingOptions
+                {
                     PureBarcode = true,
                     Width = toValue(180),
                     Height = toValue(50),
                 }
             };
-          
+
             var bitmap = writerBarCode.Write(this.resultData.billId);
-            // MessageBox.Show(bitmap.Size.Height + " " + bitmap.Size.Width);
-            //var bitmapData = new Bitmap(bitmap, new Size(toValue(150), toValue(50)));
-            graphics.DrawImage(bitmap, toValue(startX), startY + Offset);
-            
+            graphics.DrawImage(bitmap, k < 1 ? toValue(startX) : toValue(startX + 30), startY + Offset);
+
             Offset = Offset + toValue(70);
 
             if (resultData.internalCode != null && resultData.internalCode.Length != 0)
             {
                 graphics.DrawString("Internal Code :".PadLeft(20), font,
-                       new SolidBrush(Color.Black), toValue( startX + 50) , startY + Offset);
+                       new SolidBrush(Color.Black), toValue(startX + 50), startY + Offset);
                 Offset = Offset + newLine20;
 
                 graphics.DrawString(resultData.internalCode, font,
@@ -537,90 +559,16 @@ namespace CSPosAPI
             }
 
             graphics.Dispose();
-            
+
         }
-        int toValue(int value) {
+        int toValue(int value)
+        {
             return Convert.ToInt32(Convert.ToDouble(value) * this.k);
         }
         private void buttonNew_Click(object sender, EventArgs e)
         {
             dataGridViewStocks.Rows.Clear();
             Calculate();
-        }
-
-        /// <summary>
-        /// Word wraps the given text to fit within the specified width.
-        /// </summary>
-        /// <param name="text">Text to be word wrapped</param>
-        /// <param name="width">Width, in characters, to which the text
-        /// should be word wrapped</param>
-        /// <returns>The modified text</returns>
-        public static string WordWrap(string text, int width)
-        {
-            int pos, next;
-            StringBuilder sb = new StringBuilder();
-
-            // Lucidity check
-            if (width < 1)
-                return text;
-
-            // Parse each line of text
-            for (pos = 0; pos < text.Length; pos = next)
-            {
-                // Find end of line
-                int eol = text.IndexOf(Environment.NewLine, pos);
-                if (eol == -1)
-                    next = eol = text.Length;
-                else
-                    next = eol + Environment.NewLine.Length;
-
-                // Copy this line of text, breaking into smaller lines as needed
-                if (eol > pos)
-                {
-                    do
-                    {
-                        int len = eol - pos;
-                        if (len > width)
-                            len = BreakLine(text, pos, width);
-                        sb.Append(text, pos, len);
-                        sb.Append(Environment.NewLine);
-
-                        // Trim whitespace following break
-                        pos += len;
-                        while (pos < eol && Char.IsWhiteSpace(text[pos]))
-                            pos++;
-                    } while (eol > pos);
-                }
-                else sb.Append(Environment.NewLine); // Empty line
-            }
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Locates position to break the given line so as to avoid
-        /// breaking words.
-        /// </summary>
-        /// <param name="text">String that contains line of text</param>
-        /// <param name="pos">Index where line of text starts</param>
-        /// <param name="max">Maximum line length</param>
-        /// <returns>The modified line length</returns>
-        private static int BreakLine(string text, int pos, int max)
-        {
-            // Find last whitespace in line
-            int i = max;
-            while (i >= 0 && !Char.IsWhiteSpace(text[pos + i]))
-                i--;
-
-            // If no whitespace found, break at maximum length
-            if (i < 0)
-                return max;
-
-            // Find start of whitespace
-            while (i >= 0 && Char.IsWhiteSpace(text[pos + i]))
-                i--;
-
-            // Return length of text before whitespace
-            return i + 1;
         }
     }
 }

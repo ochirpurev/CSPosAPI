@@ -12,15 +12,25 @@ namespace CSPosAPI
 {
     public partial class FormNonCash : Form
     {
+        /// <summary>
+        /// Нийт бэлэн бус гүйлгээний нийлбэр
+        /// </summary>
         private double summaryNonCash = 0;
 
+        /// <summary>
+        /// Бэлэн бус гүйлгээний жагсаалт
+        /// </summary>
         private List<BillBankTransaction> listBankTranscation = null;
-
+        /// <summary>
+        /// Бэлэн бус мөнгөн дүнг MainForm-д дамжуулах
+        /// </summary>
         public double SummaryNonCash
         {
             get { return summaryNonCash; }
         }
-
+        /// <summary>
+        /// Бэлэн бус гүйлгээний жагсаалтыг MainForm-д дамжуулах
+        /// </summary>
         public List<BillBankTransaction> ListBankTranscation
         {
             get { return listBankTranscation; }
@@ -31,20 +41,25 @@ namespace CSPosAPI
 
             dataGridViewNonCash.Rows[0].Cells["RRN"].Value = "234598562687";
             dataGridViewNonCash.Rows[0].Cells["BankId"].Value = "05";
-            dataGridViewNonCash.Rows[0].Cells["BankName"].Value = "Хаан банк Жуков";
+            dataGridViewNonCash.Rows[0].Cells["BankName"].Value = "Хаан";
             dataGridViewNonCash.Rows[0].Cells["TerminalId"].Value = "KH98793";
             dataGridViewNonCash.Rows[0].Cells["Approval"].Value = "156946";
             dataGridViewNonCash.Rows[0].Cells["Amount"].Value = "0.00";
             dataGridViewNonCash.Rows[0].Cells["AquireBankId"].Value = "04";
         }
 
+        #region EVENT_CLICK
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             listBankTranscation = null;
             summaryNonCash = 0;
             this.Close();
         }
-
+        /// <summary>
+        /// Бэлэн бус гүйлгээний жагсаалтыг үүсгэх
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonOk_Click(object sender, EventArgs e)
         {
 
@@ -67,10 +82,16 @@ namespace CSPosAPI
 
             this.Close();
         }
+        #endregion
 
+        #region EVENT_VALUECHANGED
+        /// <summary>
+        /// Бэлэн бус-н нийлбэрийг тооцоолох
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dataGridViewNonCash_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-
             summaryNonCash = 0;
             foreach (DataGridViewRow row in dataGridViewNonCash.Rows)
             {
@@ -82,5 +103,6 @@ namespace CSPosAPI
             }
             textBoxNonCashAmount.Text = summaryNonCash.ToString(Program.NUMBER_FORMAT);
         }
+        #endregion
     }
 }

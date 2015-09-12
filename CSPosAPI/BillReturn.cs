@@ -13,21 +13,26 @@ namespace CSPosAPI
 {
     public partial class BillReturn : Form
     {
-
        
         public BillReturn()
         {
             InitializeComponent();
-            
             dateTimePickerReturn.CustomFormat = "yyyy-MM-dd-HH:mm:ss";
-            //dateTimePickerReturn.ShowUpDown = true;
         }
 
+        #region EVENT_CLICK
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
+        /// <summary>
+        /// Барааг буцаахдаа баримтын дугаар болон гүйлгээ хийгдсэн огноог оруулна.
+        /// Огноо нь yyyy-MM-dd HH:mm:ss форматтай байна.
+        /// Амжилттай буцаагдсан бол success true.
+        /// Алдаа гарсан бол алдааны мэдээлийг харуулна.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonReturn_Click(object sender, EventArgs e)
         {
             var returnBillData = new ReturnBill() {
@@ -35,7 +40,6 @@ namespace CSPosAPI
                 date = dateTimePickerReturn.Value.ToString("yyyy-MM-dd HH:mm:ss")
             };
             var jsonData = new JavaScriptSerializer().Serialize(returnBillData);
-
 
             var result = Program.returnBill(jsonData);
             var resultData = new JavaScriptSerializer().Deserialize<Result>(result);
@@ -54,5 +58,6 @@ namespace CSPosAPI
                 }
             }
         }
+        #endregion EVENT_CLICK
     }
 }

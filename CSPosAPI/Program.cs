@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
+using System.Data.SQLite;
+using System.ComponentModel.DataAnnotations;
 
 namespace CSPosAPI
 {
@@ -31,8 +37,6 @@ namespace CSPosAPI
             )]
         public static extern string put(String message);
         
-
-
         /// <summary>
         /// Бараа, үйлчилгээ борлуулсан баримтыг хүчингүй болгох метод.
         /// Бараа, үйлчилгээ борлуулсан баримтыг хэсэгчлэн буцааж /10 ширхэг бараанаас зөвхөн 1 ширхэг бараа гэх мэт/ болохгүй. 
@@ -55,7 +59,9 @@ namespace CSPosAPI
         [return: MarshalAs(UnmanagedType.BStr)]
         public static extern string sendData();
 
-
+        /// <summary>
+        /// Тоон формат
+        /// </summary>
         public const string NUMBER_FORMAT = "0.00";
 
         /// <summary>
@@ -65,14 +71,10 @@ namespace CSPosAPI
         [STAThread]
         static void Main()
         {
-            
-            //var lib = Environment.Is64BitOperatingSystem ? "lib-x64" : "lib-x86";
-            //var path = Environment.GetEnvironmentVariable("PATH");
-            //Environment.SetEnvironmentVariable("PATH", path + @";/libs/" + lib);
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
         }
+
     }
 }
