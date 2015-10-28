@@ -74,7 +74,13 @@ namespace CSPosAPI.Common
         /// Амжилттай татсан буюу Амжилттай буцаасан
         /// </summary>
         public string success;
-
+        /// <summary>
+        /// Алдаа болон анхрааруулгын мессеж
+        /// </summary>
         public string warningMsg;
+        /// <summary>
+        /// Сугалаа өгөх боломжгүй болсон тухайн тайлбар анхааруулга мессеж
+        /// </summary>
+        public string lotteryWarningMsg;
     }
 }
