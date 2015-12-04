@@ -193,8 +193,12 @@
     <None Include="libs\lib-x86\zxing.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="libs\lib-x64\Qt5Script.dll" />
-    <Content Include="libs\lib-x86\Qt5Script.dll" />
+    <Content Include="libs\lib-x64\Qt5Script.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libs\lib-x86\Qt5Script.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="logo-last.ico" />
   </ItemGroup>
   <ItemGroup>
