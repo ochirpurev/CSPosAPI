@@ -47,5 +47,7 @@ namespace CSPosAPI.Common
         /// </summary>
         public string districtCode;
 
+        public string posNo;
+
     }
 }

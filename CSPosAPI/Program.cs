@@ -55,6 +55,37 @@ namespace CSPosAPI
         [DllImport("PosAPI.dll")]
         [return: MarshalAs(UnmanagedType.BStr)]
         public static extern string sendData();
+        /// <summary>
+        /// Хэрэглэгчийн системийн тогтвортой ажиллагааг хангах шаардлагын улмаас PosAPI сангийн ажиллагааг шалгана. Хэрэглэгчийн системийг ажиллуулж буй үйлдлийн системийн хэрэглэгч нь заавал өөрийн HOME directory-той байх ёстой. Хэрэв уг шаардлагыг хангаагүй бол уг функц нь амжилтгүй гэсэн утгыг буцаана.
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("PosAPI.dll")]
+        [return: MarshalAs(UnmanagedType.BStr)]
+        public static extern string checkApi();
+        /// <summary>
+        /// Хэрэглэгчийн систем нь нэгээс олон PosAPI ашиглаж буй үед харьцаж буй PosAPI-гийн мэдээллийг харах шаардлага тулгардаг. Уг функц нь уг асуудлыг шийдэж буй бөгөөд уг функцийн тусламжтайгаар хэрэглэгчийн систем нь тухайн ашиглаж буй PosAPI-гийн дотоод мэдээллүүдийг авна.
+        /// </summary>
+        /// <returns></returns>
+        [DllImport("PosAPI.dll")]
+        [return: MarshalAs(UnmanagedType.BStr)]
+        public static extern string getInformation();
+
+
+        /// <summary>
+        /// PosAPI нь цаашид шинээр нэмэлт функцүүд нэмэгдэх бөгөөд нэмэгдсэн функцийг ашиглахын тулд заавал өөрийн PosAPI-г шинээр татах шаардлаггүй юм. Уг нэмэлт функцүүдийг уг функцийн тусламжтайгаар дуудана.
+        /// </summary>
+        /// <param name="funcName"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [DllImport(
+            "PosAPI.dll",
+            CharSet = CharSet.Unicode,
+            CallingConvention = CallingConvention.Cdecl
+           )]
+        [return: MarshalAs(
+            UnmanagedType.BStr
+            )]
+        public static extern string callFunction(string funcName, string param);
 
         /// <summary>
         /// Тоон формат

@@ -83,6 +83,7 @@ namespace CSPosAPI
         private void buttonCreateBill_Click(object sender, EventArgs e)
         {
             var data = new BillData();
+            data.posNo = textBoxPosNo.Text;
             data.amount = textBoxAmount.Text;
             data.vat = textBoxVat.Text;
             data.cashAmount = textBoxCash.Text;
@@ -127,6 +128,7 @@ namespace CSPosAPI
             {
                 print();
             }
+            else { MessageBox.Show(resultData.message); }
         }
         /// <summary>
         /// Буцаалтын гүйлгээний цонх-г ажиллуулна.
@@ -205,9 +207,12 @@ namespace CSPosAPI
                     double vat = Convert.ToDouble(row.Cells["Vat"].Value);
                     double cityTax = Convert.ToDouble(row.Cells["CityTax"].Value);
                     double unitPriceNonVat = Convert.ToDouble(row.Cells["UnitPriceNonVat"].Value);
-                    double summary = qty * (unitPrice + cityTax);
-                    row.Cells["UnitPrice"].Value = (unitPriceNonVat * 1.1).ToString(Program.NUMBER_FORMAT);
-                    row.Cells["Vat"].Value = (unitPriceNonVat * 0.1).ToString(Program.NUMBER_FORMAT);
+                   // double summary = qty * (unitPrice + cityTax);
+                    double summary = qty * (unitPrice);
+                   // row.Cells["UnitPrice"].Value = (unitPriceNonVat * 1.1).ToString(Program.NUMBER_FORMAT);
+                    //row.Cells["Vat"].Value = (unitPriceNonVat * 0.1).ToString(Program.NUMBER_FORMAT);
+                    row.Cells["UnitPrice"].Value = (unitPriceNonVat * 1).ToString(Program.NUMBER_FORMAT);
+                   // row.Cells["Vat"].Value = (unitPriceNonVat * 1).ToString(Program.NUMBER_FORMAT);
                     row.Cells["Amount"].Value = summary.ToString(Program.NUMBER_FORMAT);
                     summaryAmount += summary;
                     summaryVat += vat;
@@ -306,6 +311,115 @@ namespace CSPosAPI
                 stock.barCode = "012465233";
                 stock.cityTax = (Convert.ToDouble(stock.unitPrice) * 0.01).ToString(Program.NUMBER_FORMAT);
             }
+                ///////-------------------------------
+            else if ("3000".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Mild Seven Blue";
+                stock.measureUnit = "ш";
+                stock.qty = "1.00";
+                stock.unitPrice = "4440.00";
+                stock.totalAmount = "4440.00";
+                stock.vat = "400.00";
+                stock.barCode = "122004";
+                stock.cityTax = "40.00";
+            }
+            else if ("3001".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Magna";
+                stock.measureUnit = "ш";
+                stock.qty = "1.00";
+                stock.unitPrice = "2500.00";
+                stock.totalAmount = "2500.00";
+                stock.vat = "250.00";
+                stock.barCode = "012465233";
+                stock.cityTax = "22.52";
+            }
+            else if ("3002".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Алим";
+                stock.measureUnit = "кг";
+                stock.qty = "1.00";
+                stock.unitPrice = "6050.00";
+                stock.totalAmount = "6050.00";
+                stock.vat = "550.00";
+                stock.barCode = "1232001";
+                stock.cityTax = "0.00";
+            }
+            else if ("3003".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Кока кола";
+                stock.measureUnit = "ш";
+                stock.qty = "1.00";
+                stock.unitPrice = "2640.00";
+                stock.totalAmount = "2640.00";
+                stock.vat = "240.00";
+                stock.barCode = "655002";
+                stock.cityTax = "0.00";
+            }
+            else if ("3004".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Болор архи 0,75";
+                stock.measureUnit = "ш";
+                stock.qty = "1.00";
+                stock.unitPrice = "22200.00";
+                stock.totalAmount = "22200.00";
+                stock.vat = "2000.00";
+                stock.barCode = "989003";
+                stock.cityTax = "200.00";
+            }
+            else if ("3005".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Сайра загас";
+                stock.measureUnit = "ш";
+                stock.qty = "1.00";
+                stock.unitPrice = "4000.00";
+                stock.totalAmount = "4000.00";
+                stock.vat = "363.64";
+                stock.barCode = "9890031";
+                stock.cityTax = "0.00";
+            }
+            else if ("3006".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Хар талх";
+                stock.measureUnit = "ш";
+                stock.qty = "1.00";
+                stock.unitPrice = "1600.00";
+                stock.totalAmount = "1600.00";
+                stock.vat = "145.45";
+                stock.barCode = "989003213";
+                stock.cityTax = "0.00";
+            }
+            else if ("3007".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Шоколад Alpen-Gold";
+                stock.measureUnit = "ш";
+                stock.qty = "1.00";
+                stock.unitPrice = "1700.00";
+                stock.totalAmount = "1700.00";
+                stock.vat = "154.54";
+                stock.barCode = "989003121";
+                stock.cityTax = "0.00";
+            }
+            else if ("3008".Equals(id))
+            {
+                stock.code = id;
+                stock.name = "Сүү";
+                stock.measureUnit = "л";
+                stock.qty = "1.00";
+                stock.unitPrice = "2000.00";
+                stock.totalAmount = "2000.00";
+                stock.vat = "181.82";
+                stock.barCode = "98900388";
+                stock.cityTax = "0.00";
+            }
             return stock;
         }
 
@@ -367,7 +481,7 @@ namespace CSPosAPI
             }
             else
             {
-                font = new Font("Courier New", 8);
+                font = new Font("Arial", 8);
                 underLine = "---------------------------------------";
             }
 
@@ -379,138 +493,299 @@ namespace CSPosAPI
             int newLine15 = toValue(15);
             int newLine20 = toValue(20);
 
-            graphics.DrawString("Мерчант :".PadRight(10) + this.resultData.merchantId,
+            // --------------------------
+            int newLine10 = toValue(10);
+            int newLine7 = toValue(7);
+            font = new Font("Arial", 7);
+            Font boldFont = new Font("Arial",8,FontStyle.Bold);
+            Font smallFont = new Font("Arial", 6);
+            Font smallFontBold = new Font("Arial", 6, FontStyle.Bold);
+            Font smallFontUnderline = new Font("Arial", 8, FontStyle.Bold |FontStyle.Underline);
+            
+
+            graphics.DrawString("Иргэн танд очих баримт".PadLeft(50), boldFont, new SolidBrush(Color.Black), startX, startY + Offset);
+
+            Offset = Offset + newLine15;
+
+            if (resultData.lottery != "" && resultData.lottery!=null)
+            {
+                graphics.DrawString("Сугалаатай".PadLeft(50), font, new SolidBrush(Color.Black), startX, startY + Offset);
+            }
+
+            Offset = Offset + newLine15;
+
+            graphics.DrawString(" Борлуулагч нь НӨАТ төлөгч мөн бол 20% урамшуулалтай".PadLeft(50), smallFont, new SolidBrush(Color.Black), startX, startY + Offset);
+
+            Offset = Offset + newLine15;
+
+            graphics.DrawString(" Борлуулагч нь НӨАТ төлөгч биш бол 20% урамшуулалгүй".PadLeft(50), smallFont, new SolidBrush(Color.Black), startX, startY + Offset);
+
+            Offset = Offset + newLine15;
+
+            graphics.DrawLine(new Pen(Color.Black, 2), new Point(startX, Offset + newLine15), new Point(startX + 300, Offset + newLine15));
+            
+            Offset = Offset + newLine15;
+
+            graphics.DrawString("Таван Буянт Трейд".PadLeft(50), boldFont, new SolidBrush(Color.Black), startX, startY + Offset);
+
+            Offset = Offset + newLine15;
+
+            graphics.DrawString("ТТД :".PadRight(15) + this.resultData.merchantId,
                     font,
                     new SolidBrush(Color.Black), startX, startY + Offset);
             Offset = Offset + newLine15;
 
-            graphics.DrawString("Баримт №: " + this.resultData.billId,
+            graphics.DrawString("ДДТД :".PadRight(13) + this.resultData.billId,
                     font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
 
             Offset = Offset + newLine15;
-            graphics.DrawString("Огноо :".PadRight(10) + this.resultData.date,
+            graphics.DrawString("Огноо :".PadRight(15) + this.resultData.date,
                      font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
             Offset = Offset + newLine15;
 
-            graphics.DrawString("Касс :".PadRight(10) + "122",
+            graphics.DrawString("Касс :".PadRight(16) + "№122",
                      font,
                      new SolidBrush(Color.Black), startX, startY + Offset);
             Offset = Offset + newLine15;
 
-            graphics.DrawString(underLine, font,
-                     new SolidBrush(Color.Black), startX, startY + Offset);
+            graphics.DrawString("Кассчин :".PadRight(14) + "№14566",
+                  font,
+                  new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine10;
 
-            Offset = Offset + newLine20;
+            graphics.DrawLine(new Pen(Color.Black, 1), new Point(startX, Offset + newLine15), new Point(startX + 300, Offset + newLine15));
 
-            string tmp = "Д/д Бараа".PadRight(10) + "Х/нэгж".PadRight(8) + "Код";
-            graphics.DrawString(tmp, font,
-                     new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine7;
+
+            graphics.DrawString("Бараа",
+                smallFontBold,
+                new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine10;
+
+            graphics.DrawLine(new Pen(Color.Black, 1), new Point(startX, Offset + newLine10), new Point(startX + 300, Offset + newLine10));
+
+            graphics.DrawString("Т/Ш".PadRight(17) + "НӨАТ".PadRight(20) + "НХАТ".PadRight(20) + "НЭГЖ ҮНЭ".PadRight(20) +"НИЙТ",
+                smallFontBold,
+                new SolidBrush(Color.Black), startX, startY + Offset + 1);
+            Offset = Offset + newLine10;
+
+            graphics.DrawLine(new Pen(Color.Black, 1), new Point(startX, Offset + newLine10), new Point(startX + 300, Offset + newLine10));
+
             Offset = Offset + newLine15;
-            string tmp1 = "Үнэ".PadRight(7) + "НӨАТ".PadRight(6) + "НХАТ".PadRight(7) + "тоо/ш".PadRight(12) + "Дүн";
-            tmp1 = tmp1.PadLeft(38);
-            graphics.DrawString(tmp1, font,
-                     new SolidBrush(Color.Black), startX, startY + Offset);
-
-            Offset = Offset + newLine20;
 
             if (this.resultData.stocks != null)
             {
                 var count = 0;
                 foreach (BillDetail stock in this.resultData.stocks)
                 {
-                    graphics.DrawString(++count + " " + stock.name.PadRight(12) + stock.measureUnit.PadRight(4) + stock.code, font, new SolidBrush(Color.Black), startX, startY + Offset);
-                    Offset = Offset + newLine20;
-                    string unitPriceVat = (Convert.ToDouble(stock.unitPrice) + Convert.ToDouble(stock.vat)).ToString(Program.NUMBER_FORMAT);
+                    
+                    graphics.DrawString(stock.name, 
+                        stock.cityTax.Equals("0.00") ? font: smallFontUnderline, new SolidBrush(Color.Black), startX, startY + Offset-10);
+                    Offset = Offset + newLine15;
 
-                    var value = String.Format("   {0:F0}   {1:F0}   {2:F0}   x {3}", Convert.ToDouble(stock.unitPrice), Convert.ToDouble(stock.vat), Convert.ToDouble(stock.cityTax), stock.qty);
-                    var amount = Convert.ToDouble(stock.totalAmount);
-                    value += amount.ToString().PadLeft(10);
-                    value = value.PadLeft(38);
+                    graphics.DrawString(stock.qty.PadRight(20 - stock.qty.Length) + stock.vat.PadRight(18 -stock.vat.Length) + stock.cityTax.PadRight(20 - stock.cityTax.Length) + stock.unitPrice.PadRight(20-stock.unitPrice.Length) + stock.totalAmount,
+                        stock.cityTax.Equals("0.00") ? font : boldFont, new SolidBrush(Color.Black), startX, startY + Offset - 10);
 
-                    graphics.DrawString(value, font,
-                       new SolidBrush(Color.Black), startX, startY + Offset);
                     Offset = Offset + newLine15;
                 }
 
             }
 
-            graphics.DrawString(underLine, font,
-                     new SolidBrush(Color.Black), startX, startY + Offset);
-            Offset = Offset + newLine20;
+            graphics.DrawLine(new Pen(Color.Black, 1), new Point(startX, Offset + newLine10), new Point(startX + 300, Offset + newLine10));
+
+            Offset = Offset + newLine10;
+
+            graphics.DrawString(("Бонус:".PadRight(25 - "Бонус:".Length) + "0.00").PadRight(40) + "Нийт үнэ:".PadRight(10) + resultData.amount,
+             font,
+             new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine15;
+
+            graphics.DrawString(("НӨАТ:".PadRight(25 - "НӨАТ:".Length) + resultData.vat).PadRight(40) + "НХАТ:".PadRight(10) + resultData.cityTax,
+            font,
+            new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine15;
+    
+            graphics.DrawString(("Бэлэн бус:".PadRight(25 - "Бэлэн бус:".Length) + resultData.nonCashAmount).PadRight(40) + "Бэлэн:".PadRight(10) + resultData.cashAmount,
+           font,
+           new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine15;
+
+            graphics.DrawString(("Төлсөн:".PadRight(25 - "Төлсөн:".Length) + resultData.amount).PadRight(40) + "Хариулт:".PadRight(10) + "0.00",
+          font,
+          new SolidBrush(Color.Black), startX, startY + Offset);
+            Offset = Offset + newLine15;
+
 
             if (resultData.bankTransactions != null && resultData.bankTransactions.Count != 0)
             {
-                string tmpb = String.Format("Банк/нэр".PadRight(13) + "RRN".PadRight(12) + "Approval".PadRight(9) + "Дүн");
-                graphics.DrawString(tmpb, font,
+
+                graphics.DrawString("Card No".PadRight(13) + "RRN".PadRight(12) + "App.Code".PadRight(9) + "Terminal ID" + "Amount", font,
                   new SolidBrush(Color.Black), startX, startY + Offset);
 
                 Offset = Offset + newLine20;
                 foreach (BillBankTransaction banktranscation in this.resultData.bankTransactions)
                 {
-                    graphics.DrawString(banktranscation.bankName.PadRight(12),
+                    graphics.DrawString("9231 23** **** 3234".PadRight(20) + banktranscation.rrn.PadRight(12) + banktranscation.approvalCode.PadRight(8) + banktranscation.amount,
                     font,
                      new SolidBrush(Color.Black),
-                    new Rectangle(startX, startY + Offset, 100, 50)
+                     startX, startY + Offset
                     );
-                    var value = banktranscation.bankName.PadRight(8) +banktranscation.rrn.PadRight(16) + banktranscation.approvalCode.PadRight(9)+ banktranscation.amount;
-                    graphics.DrawString(value, font,
-                      new SolidBrush(Color.Black), startX, startY + Offset);
-                    Offset = Offset + newLine20; //newLine20;
                 }
-
-                graphics.DrawString(underLine, font,
-                         new SolidBrush(Color.Black), startX, startY + Offset);
                 Offset = Offset + newLine20;
             }
 
-            graphics.DrawString("Бэлэн :".PadRight(13) + resultData.cashAmount, font,
-                   new SolidBrush(Color.Black), startX, startY + Offset);
+            
+            graphics.DrawLine(new Pen(Color.Black, 1), new Point(startX, Offset + newLine10), new Point(startX + 300, Offset + newLine10));
 
+            Offset = Offset + newLine10;
+
+            var logo = new Bitmap("logo-bill.png");
+            graphics.DrawImage(logo, startX + 20 , startY + Offset);
             Offset = Offset + newLine20;
-
-            graphics.DrawString("Бэлэн Бус :".PadRight(13) + resultData.nonCashAmount, font,
-                   new SolidBrush(Color.Black), startX, startY + Offset);
-
             Offset = Offset + newLine20;
-
-            graphics.DrawString("НӨАТ :".PadRight(13) + resultData.vat, font,
-                 new SolidBrush(Color.Black), startX, startY + Offset);
-
             Offset = Offset + newLine20;
-
-            graphics.DrawString("НХАТ :".PadRight(13) + resultData.cityTax, font,
-               new SolidBrush(Color.Black), startX, startY + Offset);
-
-            Offset = Offset + newLine20;
-
-            graphics.DrawString("Нийт :".PadRight(13) + resultData.amount, font,
-       new SolidBrush(Color.Black), startX, startY + Offset);
-
-            Offset = Offset + newLine20;
-
-            graphics.DrawString("Төлсөн :".PadRight(13) + Convert.ToDouble(textBoxPaidAmount.Text).ToString(Program.NUMBER_FORMAT), font,
- new SolidBrush(Color.Black), startX, startY + Offset);
-
-            Offset = Offset + newLine20;
-
-            graphics.DrawString("Хариулт :".PadRight(13) + (Convert.ToDouble(textBoxPaidAmount.Text) - Convert.ToDouble(this.resultData.cashAmount)).ToString(Program.NUMBER_FORMAT), font,
- new SolidBrush(Color.Black), startX, startY + Offset);
-
-            Offset = Offset + newLine20;
-
-            graphics.DrawString(underLine, font,
-                     new SolidBrush(Color.Black), startX, startY + Offset);
-            Offset = Offset + newLine20;
-
-            if (resultData.lottery != null && resultData.lottery.Length != 0)
+            if (resultData.lottery != null)
             {
-                graphics.DrawString("Сугалаа :".PadRight(15) + this.resultData.lottery,
-                    font,
-                    new SolidBrush(Color.Black), startX, startY + Offset);
-                Offset = Offset + newLine15;
+                graphics.DrawString("Сугалаа ".PadLeft(30) + resultData.lottery, boldFont, new SolidBrush(Color.Black), startX, startY + Offset);
             }
+
+            Offset = Offset + newLine15;
+            ///--------------------------
+
+ //           graphics.DrawString("Мерчант :".PadRight(10) + this.resultData.merchantId,
+ //                   font,
+ //                   new SolidBrush(Color.Black), startX, startY + Offset);
+ //           Offset = Offset + newLine15;
+
+ //           graphics.DrawString("Баримт №: " + this.resultData.billId,
+ //                   font,
+ //                    new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine15;
+ //           graphics.DrawString("Огноо :".PadRight(10) + this.resultData.date,
+ //                    font,
+ //                    new SolidBrush(Color.Black), startX, startY + Offset);
+ //           Offset = Offset + newLine15;
+
+ //           graphics.DrawString("Касс :".PadRight(10) + "122",
+ //                    font,
+ //                    new SolidBrush(Color.Black), startX, startY + Offset);
+ //           Offset = Offset + newLine15;
+
+ //           graphics.DrawString(underLine, font,
+ //                    new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           string tmp = "Д/д Бараа".PadRight(10) + "Х/нэгж".PadRight(8) + "Код";
+ //           graphics.DrawString(tmp, font,
+ //                    new SolidBrush(Color.Black), startX, startY + Offset);
+ //           Offset = Offset + newLine15;
+ //           string tmp1 = "Үнэ".PadRight(7) + "НӨАТ".PadRight(6) + "НХАТ".PadRight(7) + "тоо/ш".PadRight(12) + "Дүн";
+ //           tmp1 = tmp1.PadLeft(38);
+ //           graphics.DrawString(tmp1, font,
+ //                    new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           if (this.resultData.stocks != null)
+ //           {
+ //               var count = 0;
+ //               foreach (BillDetail stock in this.resultData.stocks)
+ //               {
+ //                   graphics.DrawString(++count + " " + stock.name.PadRight(12) + stock.measureUnit.PadRight(4) + stock.code, font, new SolidBrush(Color.Black), startX, startY + Offset);
+ //                   Offset = Offset + newLine20;
+ //                   string unitPriceVat = (Convert.ToDouble(stock.unitPrice) + Convert.ToDouble(stock.vat)).ToString(Program.NUMBER_FORMAT);
+
+ //                   var value = String.Format("   {0:F0}   {1:F0}   {2:F0}   x {3}", Convert.ToDouble(stock.unitPrice), Convert.ToDouble(stock.vat), Convert.ToDouble(stock.cityTax), stock.qty);
+ //                   var amount = Convert.ToDouble(stock.totalAmount);
+ //                   value += amount.ToString().PadLeft(10);
+ //                   value = value.PadLeft(38);
+
+ //                   graphics.DrawString(value, font,
+ //                      new SolidBrush(Color.Black), startX, startY + Offset);
+ //                   Offset = Offset + newLine15;
+ //               }
+
+ //           }
+
+ //           graphics.DrawString(underLine, font,
+ //                    new SolidBrush(Color.Black), startX, startY + Offset);
+ //           Offset = Offset + newLine20;
+
+ //           if (resultData.bankTransactions != null && resultData.bankTransactions.Count != 0)
+ //           {
+ //               string tmpb = String.Format("Банк/нэр".PadRight(13) + "RRN".PadRight(12) + "Approval".PadRight(9) + "Дүн");
+ //               graphics.DrawString(tmpb, font,
+ //                 new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //               Offset = Offset + newLine20;
+ //               foreach (BillBankTransaction banktranscation in this.resultData.bankTransactions)
+ //               {
+ //                   graphics.DrawString(banktranscation.bankName.PadRight(12),
+ //                   font,
+ //                    new SolidBrush(Color.Black),
+ //                   new Rectangle(startX, startY + Offset, 100, 50)
+ //                   );
+ //                   var value = banktranscation.bankName.PadRight(8) +banktranscation.rrn.PadRight(16) + banktranscation.approvalCode.PadRight(9)+ banktranscation.amount;
+ //                   graphics.DrawString(value, font,
+ //                     new SolidBrush(Color.Black), startX, startY + Offset);
+ //                   Offset = Offset + newLine20; //newLine20;
+ //               }
+
+ //               graphics.DrawString(underLine, font,
+ //                        new SolidBrush(Color.Black), startX, startY + Offset);
+ //               Offset = Offset + newLine20;
+ //           }
+
+ //           graphics.DrawString("Бэлэн :".PadRight(13) + resultData.cashAmount, font,
+ //                  new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           graphics.DrawString("Бэлэн Бус :".PadRight(13) + resultData.nonCashAmount, font,
+ //                  new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           graphics.DrawString("НӨАТ :".PadRight(13) + resultData.vat, font,
+ //                new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           graphics.DrawString("НХАТ :".PadRight(13) + resultData.cityTax, font,
+ //              new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           graphics.DrawString("Нийт :".PadRight(13) + resultData.amount, font,
+ //      new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           graphics.DrawString("Төлсөн :".PadRight(13) + Convert.ToDouble(textBoxPaidAmount.Text).ToString(Program.NUMBER_FORMAT), font,
+ //new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           graphics.DrawString("Хариулт :".PadRight(13) + (Convert.ToDouble(textBoxPaidAmount.Text) - Convert.ToDouble(this.resultData.cashAmount)).ToString(Program.NUMBER_FORMAT), font,
+ //new SolidBrush(Color.Black), startX, startY + Offset);
+
+ //           Offset = Offset + newLine20;
+
+ //           graphics.DrawString(underLine, font,
+ //                    new SolidBrush(Color.Black), startX, startY + Offset);
+ //           Offset = Offset + newLine20;
+
+ //           if (resultData.lottery != null && resultData.lottery.Length != 0)
+ //           {
+ //               graphics.DrawString("Сугалаа :".PadRight(15) + this.resultData.lottery,
+ //                   font,
+ //                   new SolidBrush(Color.Black), startX, startY + Offset);
+ //               Offset = Offset + newLine15;
+ //           }
 
 
             if (resultData.lottery != null && resultData.lottery.Length != 0)
@@ -536,7 +811,6 @@ namespace CSPosAPI
                 Format = ZXing.BarcodeFormat.CODE_128,
                 Options = new ZXing.OneD.Code128EncodingOptions
                 {
-                    PureBarcode = true,
                     Width = toValue(180),
                     Height = toValue(50),
                 }
@@ -546,18 +820,7 @@ namespace CSPosAPI
             graphics.DrawImage(bitmap, k < 1 ? toValue(startX) : toValue(startX + 30), startY + Offset);
 
             Offset = Offset + toValue(70);
-
-            if (resultData.internalCode != null && resultData.internalCode.Length != 0)
-            {
-                graphics.DrawString("Internal Code :".PadLeft(20), font,
-                       new SolidBrush(Color.Black), toValue(startX + 50), startY + Offset);
-                Offset = Offset + newLine20;
-
-                graphics.DrawString(resultData.internalCode, font,
-                        new SolidBrush(Color.Black), new Rectangle(toValue(startX + 50), startY + Offset, toValue(150), 50));
-                Offset = Offset + newLine20;
-            }
-
+ 
             graphics.Dispose();
 
         }
@@ -569,6 +832,16 @@ namespace CSPosAPI
         {
             dataGridViewStocks.Rows.Clear();
             Calculate();
+        }
+
+        private void buttonCheckApi_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(Program.checkApi());
+        }
+
+        private void buttonGetInformation_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(Program.getInformation());
         }
     }
 }
